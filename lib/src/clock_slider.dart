@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_clock_slider/src/sleep_paint.dart';
+import 'package:flutter_clock_slider/src/clock_paint.dart';
 
 class ClockSlider extends StatelessWidget {
   // this represents the initial and end time from 0 to 288
@@ -39,7 +39,7 @@ class ClockSlider extends StatelessWidget {
     return Container(
         height: height ?? 220,
         width: width ?? 220,
-        child: SleepPaint(
+        child: ClockPaint(
           initTime: initTime,
           endTime: endTime,
           onTimeChange: onTimeChange,
