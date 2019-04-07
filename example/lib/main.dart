@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_clock_slider/flutter_clock_slider.dart';
+import 'package:flutter_circular_slider/flutter_circular_slider.dart';
 
 void main() => runApp(MyApp());
 
@@ -75,17 +75,24 @@ class _SleepPageState extends State<SleepPage> {
           'How long did you stay in bed?',
           style: TextStyle(color: Colors.white),
         ),
-        ClockSlider(
+        CircularSlider(
+          288,
           _initTime,
           _endTime,
           height: 220.0,
           width: 220.0,
-          baseClockColor: Color.fromRGBO(255, 255, 255, 0.1),
-          selectedClockColor: baseColor,
+          baseColor: Color.fromRGBO(255, 255, 255, 0.1),
+          selectionColor: baseColor,
           handlerColor: Colors.white,
           textColor: Colors.white,
           handlerOutterRadius: 12.0,
-          onTimeChange: _updateTime,
+          onSelectionChange: _updateTime,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Center(
+                child: Text('${_formatIntervalTime(_initTime, _endTime)}',
+                    style: TextStyle(fontSize: 36.0, color: Colors.white))),
+          ),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           _formatBedTime('IN THE', _initTime),
@@ -124,6 +131,13 @@ class _SleepPageState extends State<SleepPage> {
     var hours = time ~/ 12;
     var minutes = (time % 12) * 5;
     return '$hours:$minutes';
+  }
+
+  String _formatIntervalTime(int init, int end) {
+    var sleepTime = end > init ? end - init : 288 - init + end;
+    var hours = sleepTime ~/ 12;
+    var minutes = (sleepTime % 12) * 5;
+    return '${hours}h${minutes}m';
   }
 
   int _generateRandomTime() => Random().nextInt(288);

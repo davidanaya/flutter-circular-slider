@@ -3,23 +3,23 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class BasePainter extends CustomPainter {
-  Color baseClockColor;
+  Color baseColor;
 
   Offset center;
   double radius;
 
-  BasePainter({@required this.baseClockColor});
+  BasePainter({@required this.baseColor});
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint base = _getPaint(color: baseClockColor);
+    Paint base = _getPaint(color: baseColor);
 
     center = Offset(size.width / 2, size.height / 2);
     radius = min(size.width / 2, size.height / 2);
 
     canvas.drawCircle(center, radius, base);
 
-    Paint section = _getPaint(color: baseClockColor, width: 2.0);
+    Paint section = _getPaint(color: baseColor, width: 2.0);
 
     _getSectionsOffsets(radius)
         .forEach((o) => canvas.drawLine(center, o, section));

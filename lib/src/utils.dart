@@ -22,9 +22,10 @@ Offset radiansToCoordinates(Offset center, double radians, double radius) {
   return Offset(dx, dy);
 }
 
-double timeToPercentage(int time) => (time / 288) * 100;
+double valueToPercentage(int time, int intervals) => (time / intervals) * 100;
 
-int percentageToTime(double percentage) => (percentage * 288) ~/ 100;
+int percentageToValue(double percentage, int intervals) =>
+    (percentage * intervals) ~/ 100;
 
 bool isPointInsideCircle(Offset point, Offset circleCenter, double radius) {
   return point.dx < (circleCenter.dx + radius) &&

@@ -1,5 +1,5 @@
-name: flutter_clock_slider
-description: A customizable widget to select time intervals with a slider.
+name: flutter_circular_slider
+description: A customizable widget to select intervals in a circular line.
 version: 0.0.1
 author:
 homepage:

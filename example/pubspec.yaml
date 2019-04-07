@@ -14,7 +14,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_clock_slider:
+  flutter_circular_slider:
     path: ../
 
 flutter:

@@ -1,13 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_clock_slider/src/utils.dart';
+import 'package:flutter_circular_slider/src/utils.dart';
 
-class ProgressPainter extends CustomPainter {
+class SliderPainter extends CustomPainter {
   double startAngle;
   double endAngle;
   double sweepAngle;
-  Color selectedClockColor;
+  Color selectionColor;
   Color handlerColor;
   double handlerOutterRadius;
 
@@ -16,11 +16,11 @@ class ProgressPainter extends CustomPainter {
   Offset center;
   double radius;
 
-  ProgressPainter(
+  SliderPainter(
       {@required this.startAngle,
       @required this.endAngle,
       @required this.sweepAngle,
-      @required this.selectedClockColor,
+      @required this.selectionColor,
       @required this.handlerColor,
       @required this.handlerOutterRadius});
 
@@ -28,7 +28,7 @@ class ProgressPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (startAngle == 0.0 && endAngle == 0.0) return;
 
-    Paint progress = _getPaint(color: selectedClockColor);
+    Paint progress = _getPaint(color: selectionColor);
 
     center = Offset(size.width / 2, size.height / 2);
     radius = min(size.width / 2, size.height / 2);

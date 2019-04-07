@@ -1,43 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clock_slider/src/base_painter.dart';
-import 'package:flutter_clock_slider/src/progress_painter.dart';
-import 'package:flutter_clock_slider/src/utils.dart';
+import 'package:flutter_circular_slider/src/base_painter.dart';
+import 'package:flutter_circular_slider/src/slider_painter.dart';
+import 'package:flutter_circular_slider/src/utils.dart';
 
-class ClockPaint extends StatefulWidget {
-  final int initTime;
-  final int endTime;
-  final Function onTimeChange;
-  final Color baseClockColor;
-  final Color selectedClockColor;
+class CircularSliderPaint extends StatefulWidget {
+  final int init;
+  final int end;
+  final int intervals;
+  final Function onSelectionChange;
+  final Color baseColor;
+  final Color selectionColor;
   final Color handlerColor;
-  final Color textColor;
   final double handlerOutterRadius;
+  final Widget child;
 
-  ClockPaint(
-      {@required this.initTime,
-      @required this.endTime,
-      @required this.onTimeChange,
-      @required this.baseClockColor,
-      @required this.selectedClockColor,
+  CircularSliderPaint(
+      {@required this.intervals,
+      @required this.init,
+      @required this.end,
+      this.child,
+      @required this.onSelectionChange,
+      @required this.baseColor,
+      @required this.selectionColor,
       @required this.handlerColor,
-      @required this.textColor,
       @required this.handlerOutterRadius});
 
   @override
-  _ClockPaintState createState() => _ClockPaintState();
+  _CircularSliderState createState() => _CircularSliderState();
 }
 
-class _ClockPaintState extends State<ClockPaint> {
+class _CircularSliderState extends State<CircularSliderPaint> {
   bool _isInitHandlerSelected = false;
   bool _isEndHandlerSelected = false;
 
-  ProgressPainter _painter;
+  SliderPainter _painter;
 
-  // start and end angle in radians where we need to locate the init and end handlers
+  /// start angle in radians where we need to locate the init handler
   double _startAngle;
+
+  /// end angle in radians where we need to locate the end handler
   double _endAngle;
 
-  // the absolute angle representing the amount of sleep (in radians)
+  /// the absolute angle in radians representing the selection
   double _sweepAngle;
 
   @override
@@ -49,10 +53,9 @@ class _ClockPaintState extends State<ClockPaint> {
   // we need to update this widget both with gesture detector but
   // also when the parent widget rebuilds itself
   @override
-  void didUpdateWidget(ClockPaint oldWidget) {
+  void didUpdateWidget(CircularSliderPaint oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.initTime != widget.initTime ||
-        oldWidget.endTime != widget.endTime) {
+    if (oldWidget.init != widget.init || oldWidget.end != widget.end) {
       _calculatePaintData();
     }
   }
@@ -65,34 +68,31 @@ class _ClockPaintState extends State<ClockPaint> {
       onPanEnd: _onPanEnd,
       child: CustomPaint(
         painter: BasePainter(
-          baseClockColor: widget.baseClockColor,
+          baseColor: widget.baseColor,
         ),
         foregroundPainter: _painter,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Center(
-              child: Text(
-                  '${_formatSleepTime(widget.initTime, widget.endTime)}',
-                  style: TextStyle(fontSize: 36.0, color: widget.textColor))),
+          child: widget.child,
         ),
       ),
     );
   }
 
   void _calculatePaintData() {
-    double initPercent = timeToPercentage(widget.initTime);
-    double endPercent = timeToPercentage(widget.endTime);
+    double initPercent = valueToPercentage(widget.init, widget.intervals);
+    double endPercent = valueToPercentage(widget.end, widget.intervals);
     double sweep = getSweepAngle(initPercent, endPercent);
 
     _startAngle = percentageToRadians(initPercent);
     _endAngle = percentageToRadians(endPercent);
     _sweepAngle = percentageToRadians(sweep.abs());
 
-    _painter = ProgressPainter(
+    _painter = SliderPainter(
       startAngle: _startAngle,
       endAngle: _endAngle,
       sweepAngle: _sweepAngle,
-      selectedClockColor: widget.selectedClockColor,
+      selectionColor: widget.selectionColor,
       handlerColor: widget.handlerColor,
       handlerOutterRadius: widget.handlerOutterRadius,
     );
@@ -110,12 +110,12 @@ class _ClockPaintState extends State<ClockPaint> {
 
     var angle = coordinatesToRadians(_painter.center, position);
     var percentage = radiansToPercentage(angle);
-    var newTime = percentageToTime(percentage);
+    var newValue = percentageToValue(percentage, widget.intervals);
 
     if (_isInitHandlerSelected) {
-      widget.onTimeChange(newTime, widget.endTime);
+      widget.onSelectionChange(newValue, widget.end);
     } else {
-      widget.onTimeChange(widget.initTime, newTime);
+      widget.onSelectionChange(widget.init, newValue);
     }
   }
 
@@ -138,12 +138,5 @@ class _ClockPaintState extends State<ClockPaint> {
             position, _painter.endHandler, widget.handlerOutterRadius);
       }
     }
-  }
-
-  String _formatSleepTime(int init, int end) {
-    var sleepTime = end > init ? end - init : 288 - init + end;
-    var hours = sleepTime ~/ 12;
-    var minutes = (sleepTime % 12) * 5;
-    return '${hours}h${minutes}m';
   }
 }

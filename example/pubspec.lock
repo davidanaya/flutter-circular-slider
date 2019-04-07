@@ -34,7 +34,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_clock_slider:
+  flutter_circular_slider:
     dependency: "direct dev"
     description:
       path: ".."
