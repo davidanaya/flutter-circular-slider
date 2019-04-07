@@ -1,9 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_clock_slider/src/sleep_painter.dart';
+import 'package:flutter_clock_slider/src/base_painter.dart';
+import 'package:flutter_clock_slider/src/progress_painter.dart';
+import 'package:flutter_clock_slider/src/utils.dart';
 
-class SleepPaint extends StatefulWidget {
+class ClockPaint extends StatefulWidget {
   final int initTime;
   final int endTime;
   final Function onTimeChange;
@@ -13,7 +13,7 @@ class SleepPaint extends StatefulWidget {
   final Color textColor;
   final double handlerOutterRadius;
 
-  SleepPaint(
+  ClockPaint(
       {@required this.initTime,
       @required this.endTime,
       @required this.onTimeChange,
@@ -24,14 +24,14 @@ class SleepPaint extends StatefulWidget {
       @required this.handlerOutterRadius});
 
   @override
-  _SleepPaintState createState() => _SleepPaintState();
+  _ClockPaintState createState() => _ClockPaintState();
 }
 
-class _SleepPaintState extends State<SleepPaint> {
+class _ClockPaintState extends State<ClockPaint> {
   bool _isInitHandlerSelected = false;
   bool _isEndHandlerSelected = false;
 
-  SleepPainter _painter;
+  ProgressPainter _painter;
 
   // start and end angle in radians where we need to locate the init and end handlers
   double _startAngle;
@@ -49,7 +49,7 @@ class _SleepPaintState extends State<SleepPaint> {
   // we need to update this widget both with gesture detector but
   // also when the parent widget rebuilds itself
   @override
-  void didUpdateWidget(SleepPaint oldWidget) {
+  void didUpdateWidget(ClockPaint oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.initTime != widget.initTime ||
         oldWidget.endTime != widget.endTime) {
@@ -64,7 +64,10 @@ class _SleepPaintState extends State<SleepPaint> {
       onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: CustomPaint(
-        painter: _painter,
+        painter: BasePainter(
+          baseClockColor: widget.baseClockColor,
+        ),
+        foregroundPainter: _painter,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Center(
@@ -77,19 +80,18 @@ class _SleepPaintState extends State<SleepPaint> {
   }
 
   void _calculatePaintData() {
-    double initPercent = _timeToPercentage(widget.initTime);
-    double endPercent = _timeToPercentage(widget.endTime);
-    double sweep = _getSweep(initPercent, endPercent);
+    double initPercent = timeToPercentage(widget.initTime);
+    double endPercent = timeToPercentage(widget.endTime);
+    double sweep = getSweepAngle(initPercent, endPercent);
 
-    _startAngle = _percentageToRadians(initPercent);
-    _endAngle = _percentageToRadians(endPercent);
-    _sweepAngle = _percentageToRadians(sweep.abs());
+    _startAngle = percentageToRadians(initPercent);
+    _endAngle = percentageToRadians(endPercent);
+    _sweepAngle = percentageToRadians(sweep.abs());
 
-    _painter = SleepPainter(
+    _painter = ProgressPainter(
       startAngle: _startAngle,
       endAngle: _endAngle,
       sweepAngle: _sweepAngle,
-      baseClockColor: widget.baseClockColor,
       selectedClockColor: widget.selectedClockColor,
       handlerColor: widget.handlerColor,
       handlerOutterRadius: widget.handlerOutterRadius,
@@ -100,24 +102,24 @@ class _SleepPaintState extends State<SleepPaint> {
     if (!_isInitHandlerSelected && !_isEndHandlerSelected) {
       return;
     }
-    RenderBox renderBox = context.findRenderObject();
-    var position = renderBox.globalToLocal(details.globalPosition);
-    var angle = _coordinatesToRadians(position);
-    if (angle == null) {
+    if (_painter.center == null) {
       return;
     }
-    var percentage = _radiansToPercentage(angle);
-    var newTime = _percentageToTime(percentage);
+    RenderBox renderBox = context.findRenderObject();
+    var position = renderBox.globalToLocal(details.globalPosition);
+
+    var angle = coordinatesToRadians(_painter.center, position);
+    var percentage = radiansToPercentage(angle);
+    var newTime = percentageToTime(percentage);
+
     if (_isInitHandlerSelected) {
       widget.onTimeChange(newTime, widget.endTime);
     } else {
       widget.onTimeChange(widget.initTime, newTime);
     }
-    print('onPanUpdate $angle --> $percentage');
   }
 
   _onPanEnd(_) {
-    print('onPanEnd');
     _isInitHandlerSelected = false;
     _isEndHandlerSelected = false;
   }
@@ -129,26 +131,13 @@ class _SleepPaintState extends State<SleepPaint> {
     RenderBox renderBox = context.findRenderObject();
     var position = renderBox.globalToLocal(details.globalPosition);
     if (position != null) {
-      _isInitHandlerSelected =
-          _isCoordInHandler(position, _painter.initHandler);
+      _isInitHandlerSelected = isPointInsideCircle(
+          position, _painter.initHandler, widget.handlerOutterRadius);
       if (!_isInitHandlerSelected) {
-        _isEndHandlerSelected =
-            _isCoordInHandler(position, _painter.endHandler);
+        _isEndHandlerSelected = isPointInsideCircle(
+            position, _painter.endHandler, widget.handlerOutterRadius);
       }
     }
-    print(
-        'onPanDown, init: $_isInitHandlerSelected, end: $_isEndHandlerSelected');
-  }
-
-  bool _isCoordInHandler(Offset point, Offset handler) {
-    var isTouching = false;
-
-    isTouching = point.dx < (handler.dx + widget.handlerOutterRadius) &&
-        point.dx > (handler.dx - widget.handlerOutterRadius) &&
-        point.dy < (handler.dy + widget.handlerOutterRadius) &&
-        point.dy > (handler.dy - widget.handlerOutterRadius);
-
-    return isTouching;
   }
 
   String _formatSleepTime(int init, int end) {
@@ -157,34 +146,4 @@ class _SleepPaintState extends State<SleepPaint> {
     var minutes = (sleepTime % 12) * 5;
     return '${hours}h${minutes}m';
   }
-
-  double _getSweep(double init, double end) {
-    if (end > init) {
-      return end - init;
-    }
-    return (100 - init + end).abs();
-  }
-
-  double _percentageToRadians(double percentage) =>
-      ((2 * pi * percentage) / 100);
-
-  double _coordinatesToRadians(Offset position) {
-    if (_painter.center == null) {
-      return null;
-    }
-    var dx = position.dx - _painter.center.dx;
-    var dy = _painter.center.dy - position.dy;
-    return atan2(dy, dx);
-  }
-
-  double _radiansToPercentage(double angle) {
-    var normalized = angle < 0 ? -angle : 2 * pi - angle;
-    var percentage = ((100 * normalized) / (2 * pi));
-    // TODO we have an inconsistency of pi/2 in terms of percentage and radians
-    return (percentage + 25) % 100;
-  }
-
-  double _timeToPercentage(int time) => (time / 288) * 100;
-
-  int _percentageToTime(double percentage) => (percentage * 288) ~/ 100;
 }
