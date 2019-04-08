@@ -1,5 +1,7 @@
 # flutter_circular_slider
 
+[![Build Status](https://travis-ci.com/davidanaya/flutter-circular-slider.svg?branch=master)](https://travis-ci.com/davidanaya/flutter-circular-slider) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A customizable circular slider for Flutter.
 
 ## Getting Started
@@ -73,7 +75,7 @@ class MyHomePage extends StatelessWidget {
 }
 ```
 
-![Basic Slider](./docs/basic-slider.gif)
+![Basic Slider](./doc/basic-slider.gif)
 
 ### Constructor
 
@@ -246,4 +248,4 @@ class _SleepPageState extends State<SleepPage> {
 }
 ```
 
-![Sleep Slider](./docs/sleep-slider.gif)
+![Sleep Slider](./doc/sleep-slider.gif)
