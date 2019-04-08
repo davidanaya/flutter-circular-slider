@@ -43,8 +43,11 @@ class SleepPage extends StatefulWidget {
 class _SleepPageState extends State<SleepPage> {
   final baseColor = Color.fromRGBO(255, 255, 255, 0.3);
 
-  int _initTime;
-  int _endTime;
+  int initTime;
+  int endTime;
+
+  int inBedTime;
+  int outBedTime;
 
   @override
   void initState() {
@@ -54,15 +57,17 @@ class _SleepPageState extends State<SleepPage> {
 
   void _shuffle() {
     setState(() {
-      _initTime = _generateRandomTime();
-      _endTime = _generateRandomTime();
+      initTime = _generateRandomTime();
+      endTime = _generateRandomTime();
+      inBedTime = initTime;
+      outBedTime = endTime;
     });
   }
 
-  void _updateTime(int initTime, int endTime) {
+  void _updateLabels(int init, int end) {
     setState(() {
-      _initTime = initTime;
-      _endTime = endTime;
+      inBedTime = init;
+      outBedTime = end;
     });
   }
 
@@ -77,26 +82,25 @@ class _SleepPageState extends State<SleepPage> {
         ),
         CircularSlider(
           288,
-          _initTime,
-          _endTime,
+          initTime,
+          endTime,
           height: 220.0,
           width: 220.0,
           baseColor: Color.fromRGBO(255, 255, 255, 0.1),
           selectionColor: baseColor,
           handlerColor: Colors.white,
-          textColor: Colors.white,
           handlerOutterRadius: 12.0,
-          onSelectionChange: _updateTime,
+          onSelectionChange: _updateLabels,
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Center(
-                child: Text('${_formatIntervalTime(_initTime, _endTime)}',
+                child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
                     style: TextStyle(fontSize: 36.0, color: Colors.white))),
           ),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          _formatBedTime('IN THE', _initTime),
-          _formatBedTime('OUT OF', _endTime),
+          _formatBedTime('IN THE', inBedTime),
+          _formatBedTime('OUT OF', outBedTime),
         ]),
         FlatButton(
           child: Text('S H U F F L E'),

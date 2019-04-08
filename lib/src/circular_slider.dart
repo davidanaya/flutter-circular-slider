@@ -10,7 +10,7 @@ import 'package:flutter_circular_slider/src/circular_slider_paint.dart';
 /// The rest of the params are used to change the look and feel.
 ///
 ///     CircularSlider(5, 10, onSelectionChange: () => {});
-class CircularSlider extends StatelessWidget {
+class CircularSlider extends StatefulWidget {
   /// the selection will be values between 0..intervals; max value is 300
   final int intervals;
 
@@ -38,9 +38,6 @@ class CircularSlider extends StatelessWidget {
   /// color of the handlers
   final Color handlerColor;
 
-  /// color for the text with the total time selected
-  final Color textColor;
-
   /// callback function when init and end change
   /// (int init, int end) => void
   final Function onSelectionChange;
@@ -55,7 +52,6 @@ class CircularSlider extends StatelessWidget {
       this.baseColor,
       this.selectionColor,
       this.handlerColor,
-      this.textColor,
       this.onSelectionChange,
       this.handlerOutterRadius})
       : assert(init >= 0 && init <= intervals,
@@ -66,20 +62,44 @@ class CircularSlider extends StatelessWidget {
             'intervals has to be > 0 and <= 300');
 
   @override
+  _CircularSliderState createState() => _CircularSliderState();
+}
+
+class _CircularSliderState extends State<CircularSlider> {
+  int init;
+  int end;
+
+  @override
+  void initState() {
+    super.initState();
+    init = widget.init;
+    end = widget.end;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
-        height: height ?? 220,
-        width: width ?? 220,
+        height: widget.height ?? 220,
+        width: widget.width ?? 220,
         child: CircularSliderPaint(
           init: init,
           end: end,
-          intervals: intervals,
-          child: child,
-          onSelectionChange: onSelectionChange,
-          baseColor: baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
-          selectionColor: selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),
-          handlerColor: handlerColor ?? Colors.white,
-          handlerOutterRadius: handlerOutterRadius ?? 12.0,
+          intervals: widget.intervals,
+          child: widget.child,
+          onSelectionChange: (newInit, newEnd) {
+            if (widget.onSelectionChange != null) {
+              widget.onSelectionChange(newInit, newEnd);
+            }
+            setState(() {
+              init = newInit;
+              end = newEnd;
+            });
+          },
+          baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
+          selectionColor:
+              widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),
+          handlerColor: widget.handlerColor ?? Colors.white,
+          handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
         ));
   }
 }
