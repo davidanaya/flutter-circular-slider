@@ -1,6 +1,6 @@
 # flutter_circular_slider
 
-[![Build Status](https://travis-ci.com/davidanaya/flutter-circular-slider.svg?branch=master)](https://travis-ci.com/davidanaya/flutter-circular-slider) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/davidanaya/flutter-circular-slider.svg?branch=master)](https://travis-ci.com/davidanaya/flutter-circular-slider) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Pub](https://img.shields.io/pub/v/flutter_circular_slider.svg)](https://pub.dartlang.org/packages/flutter_circular_slider)
 
 A customizable circular slider for Flutter.
 
