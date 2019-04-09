@@ -84,8 +84,10 @@ class MyHomePage extends StatelessWidget {
 | intervals           |                                           | The number of sections in which the circle will be divided for selection.                    |
 | init                |                                           | The initial value in the selection. Has to be bigger than 0 and smaller than intervals.      |
 | end                 |                                           | The end value in the selection. Has to be bigger than 0 and smaller than intervals.          |
-| height              |                   220.0                   | Set to `true` enable auto play mode.                                                         |
-| width               |                   220.0                   | Called with the new index when the user swiped or autoplay                                   |
+| height              |                   220.0                   | Height of the canvas where the slider is rendered.                                           |
+| width               |                   220.0                   | Width of the canvas where the slider is rendered.                                            |
+| primarySectors      |                     0                     | Number of sectors painted in the base circle. Painted in selectionColor.                     |
+| secondarySectors    |                     0                     | Number of secondary sectors painted in the base circle. Painted in baseColor.                |
 | child               |                   null                    | Widget that will be inserted in the center of the circular slider.                           |
 | onSelectionChange   | void onSelectionChange(int init, int end) | Triggered every time the user interacts with the slider and changes the init and end values. |
 | baseColor           |    Color.fromRGBO(255, 255, 255, 0.1)     | The color used for the base of the circle.                                                   |
