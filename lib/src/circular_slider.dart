@@ -20,6 +20,14 @@ class CircularSlider extends StatefulWidget {
   /// the end value in the selection
   final int end;
 
+  /// the number of primary sectors to be painted
+  /// will be painted using selectionColor
+  final int primarySectors;
+
+  /// the number of secondary sectors to be painted
+  /// will be painted using baseColor
+  final int secondarySectors;
+
   /// an optional widget that would be mounted inside the circle
   final Widget child;
 
@@ -49,6 +57,8 @@ class CircularSlider extends StatefulWidget {
       {this.height,
       this.width,
       this.child,
+      this.primarySectors,
+      this.secondarySectors,
       this.baseColor,
       this.selectionColor,
       this.handlerColor,
@@ -85,6 +95,8 @@ class _CircularSliderState extends State<CircularSlider> {
           init: init,
           end: end,
           intervals: widget.intervals,
+          primarySectors: widget.primarySectors ?? 0,
+          secondarySectors: widget.secondarySectors ?? 0,
           child: widget.child,
           onSelectionChange: (newInit, newEnd) {
             if (widget.onSelectionChange != null) {

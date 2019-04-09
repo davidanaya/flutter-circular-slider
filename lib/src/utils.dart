@@ -27,11 +27,11 @@ double valueToPercentage(int time, int intervals) => (time / intervals) * 100;
 int percentageToValue(double percentage, int intervals) =>
     (percentage * intervals) ~/ 100;
 
-bool isPointInsideCircle(Offset point, Offset circleCenter, double radius) {
-  return point.dx < (circleCenter.dx + radius) &&
-      point.dx > (circleCenter.dx - radius) &&
-      point.dy < (circleCenter.dy + radius) &&
-      point.dy > (circleCenter.dy - radius);
+bool isPointInsideCircle(Offset point, Offset center, double radius) {
+  return point.dx < (center.dx + radius) &&
+      point.dx > (center.dx - radius) &&
+      point.dy < (center.dy + radius) &&
+      point.dy > (center.dy - radius);
 }
 
 double getSweepAngle(double init, double end) {
@@ -39,4 +39,13 @@ double getSweepAngle(double init, double end) {
     return end - init;
   }
   return (100 - init + end).abs();
+}
+
+List<Offset> getSectionsCoordinatesInCircle(
+    Offset center, double radius, int sections) {
+  var intervalAngle = (pi * 2) / sections;
+  return List<int>.generate(sections, (int index) => index).map((i) {
+    var radians = (pi / 2) + (intervalAngle * i);
+    return radiansToCoordinates(center, radians, radius);
+  }).toList();
 }

@@ -86,6 +86,8 @@ class _SleepPageState extends State<SleepPage> {
           endTime,
           height: 220.0,
           width: 220.0,
+          primarySectors: 6,
+          secondarySectors: 24,
           baseColor: Color.fromRGBO(255, 255, 255, 0.1),
           selectionColor: baseColor,
           handlerColor: Colors.white,

@@ -7,6 +7,8 @@ class CircularSliderPaint extends StatefulWidget {
   final int init;
   final int end;
   final int intervals;
+  final int primarySectors;
+  final int secondarySectors;
   final Function onSelectionChange;
   final Color baseColor;
   final Color selectionColor;
@@ -19,6 +21,8 @@ class CircularSliderPaint extends StatefulWidget {
       @required this.init,
       @required this.end,
       this.child,
+      @required this.primarySectors,
+      @required this.secondarySectors,
       @required this.onSelectionChange,
       @required this.baseColor,
       @required this.selectionColor,
@@ -68,8 +72,10 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       onPanEnd: _onPanEnd,
       child: CustomPaint(
         painter: BasePainter(
-          baseColor: widget.baseColor,
-        ),
+            baseColor: widget.baseColor,
+            selectionColor: widget.selectionColor,
+            primarySectors: widget.primarySectors,
+            secondarySectors: widget.secondarySectors),
         foregroundPainter: _painter,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
