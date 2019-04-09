@@ -1,6 +1,6 @@
 name: flutter_circular_slider
 description: A customizable widget to select intervals in a circular line.
-version: 1.0.1
+version: 1.0.2
 author: David Anaya <danaya@gmail.com>
 homepage: https://github.com/davidanaya/flutter-circular-slider
 repository: https://github.com/davidanaya/flutter-circular-slider

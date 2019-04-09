@@ -1,3 +1,7 @@
+## [1.0.2] - 2019-04-09
+
+- Add primary and secondary sectors.
+
 ## [1.0.1] - 2019-04-09
 
 - Update README.md in the example.
