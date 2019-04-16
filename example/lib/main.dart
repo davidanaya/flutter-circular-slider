@@ -1,10 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_circular_slider/flutter_circular_slider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  debugPrintGestureArenaDiagnostics = true;
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -73,48 +76,70 @@ class _SleepPageState extends State<SleepPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(
-          'How long did you stay in bed?',
-          style: TextStyle(color: Colors.white),
-        ),
-        CircularSlider(
-          288,
-          initTime,
-          endTime,
-          height: 220.0,
-          width: 220.0,
-          primarySectors: 6,
-          secondarySectors: 24,
-          baseColor: Color.fromRGBO(255, 255, 255, 0.1),
-          selectionColor: baseColor,
-          handlerColor: Colors.white,
-          handlerOutterRadius: 12.0,
-          onSelectionChange: _updateLabels,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Center(
-                child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
-                    style: TextStyle(fontSize: 36.0, color: Colors.white))),
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints viewportConstraints) {
+      return SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: viewportConstraints.maxHeight,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                // A fixed-height child.
+                color: Colors.yellow,
+                height: 220.0,
+              ),
+              Text(
+                'How long did you stay in bed?',
+                style: TextStyle(color: Colors.white),
+              ),
+              CircularSlider(
+                288,
+                initTime,
+                endTime,
+                height: 220.0,
+                width: 220.0,
+                primarySectors: 6,
+                secondarySectors: 24,
+                baseColor: Color.fromRGBO(255, 255, 255, 0.1),
+                selectionColor: baseColor,
+                handlerColor: Colors.white,
+                handlerOutterRadius: 12.0,
+                onSelectionChange: _updateLabels,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Center(
+                      child: Text(
+                          '${_formatIntervalTime(inBedTime, outBedTime)}',
+                          style:
+                              TextStyle(fontSize: 36.0, color: Colors.white))),
+                ),
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                _formatBedTime('IN THE', inBedTime),
+                _formatBedTime('OUT OF', outBedTime),
+              ]),
+              FlatButton(
+                child: Text('S H U F F L E'),
+                color: baseColor,
+                textColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50.0),
+                ),
+                onPressed: _shuffle,
+              ),
+              Container(
+                // Another fixed-height child.
+                color: Colors.green,
+                height: 220.0,
+              ),
+            ],
           ),
         ),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          _formatBedTime('IN THE', inBedTime),
-          _formatBedTime('OUT OF', outBedTime),
-        ]),
-        FlatButton(
-          child: Text('S H U F F L E'),
-          color: baseColor,
-          textColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-          ),
-          onPressed: _shuffle,
-        ),
-      ],
-    );
+      );
+    });
   }
 
   Widget _formatBedTime(String pre, int time) {

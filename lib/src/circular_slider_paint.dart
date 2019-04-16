@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_slider/src/base_painter.dart';
 import 'package:flutter_circular_slider/src/slider_painter.dart';
@@ -66,10 +67,17 @@ class _CircularSliderState extends State<CircularSliderPaint> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanDown: _onPanDown,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
+    return RawGestureDetector(
+      gestures: <Type, GestureRecognizerFactory>{
+        CustomPanGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<CustomPanGestureRecognizer>(
+          () => CustomPanGestureRecognizer(
+              onPanDown: _onPanDown,
+              onPanUpdate: _onPanUpdate,
+              onPanEnd: _onPanEnd),
+          (CustomPanGestureRecognizer instance) {},
+        ),
+      },
       child: CustomPaint(
         painter: BasePainter(
             baseColor: widget.baseColor,
@@ -104,7 +112,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     );
   }
 
-  _onPanUpdate(DragUpdateDetails details) {
+  void _onPanUpdate(Offset details) {
     if (!_isInitHandlerSelected && !_isEndHandlerSelected) {
       return;
     }
@@ -112,7 +120,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       return;
     }
     RenderBox renderBox = context.findRenderObject();
-    var position = renderBox.globalToLocal(details.globalPosition);
+    var position = renderBox.globalToLocal(details);
 
     var angle = coordinatesToRadians(_painter.center, position);
     var percentage = radiansToPercentage(angle);
@@ -125,17 +133,17 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     }
   }
 
-  _onPanEnd(_) {
+  void _onPanEnd(_) {
     _isInitHandlerSelected = false;
     _isEndHandlerSelected = false;
   }
 
-  _onPanDown(DragDownDetails details) {
+  bool _onPanDown(Offset details) {
     if (_painter == null) {
-      return;
+      return false;
     }
     RenderBox renderBox = context.findRenderObject();
-    var position = renderBox.globalToLocal(details.globalPosition);
+    var position = renderBox.globalToLocal(details);
     if (position != null) {
       _isInitHandlerSelected = isPointInsideCircle(
           position, _painter.initHandler, widget.handlerOutterRadius);
@@ -144,5 +152,44 @@ class _CircularSliderState extends State<CircularSliderPaint> {
             position, _painter.endHandler, widget.handlerOutterRadius);
       }
     }
+    return _isInitHandlerSelected || _isEndHandlerSelected;
   }
+}
+
+class CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
+  final Function onPanDown;
+  final Function onPanUpdate;
+  final Function onPanEnd;
+
+  CustomPanGestureRecognizer(
+      {@required this.onPanDown,
+      @required this.onPanUpdate,
+      @required this.onPanEnd});
+
+  @override
+  void addPointer(PointerEvent event) {
+    if (onPanDown(event.position)) {
+      startTrackingPointer(event.pointer);
+      resolve(GestureDisposition.accepted);
+    } else {
+      stopTrackingPointer(event.pointer);
+    }
+  }
+
+  @override
+  void handleEvent(PointerEvent event) {
+    if (event is PointerMoveEvent) {
+      onPanUpdate(event.position);
+    }
+    if (event is PointerUpEvent) {
+      onPanEnd(event.position);
+      stopTrackingPointer(event.pointer);
+    }
+  }
+
+  @override
+  String get debugDescription => 'customPan';
+
+  @override
+  void didStopTrackingLastPointer(int pointer) {}
 }
