@@ -1,4 +1,8 @@
-## [1.1.0] - 2019-04-17
+## [1.1.2] - 2019-04-17
+
+- Fix typo in changelog.
+
+## [1.1.1] - 2019-04-17
 
 - Fix to allow the widget to work inside a scrollable widget without gesture detectors interfering.
 
