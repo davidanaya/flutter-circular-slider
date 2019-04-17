@@ -1,3 +1,7 @@
+## [1.1.0] - 2019-04-17
+
+- Fix to allow the widget to work inside a scrollable widget without gesture detectors interfering.
+
 ## [1.1.0] - 2019-04-09
 
 - Update README and fix sem versioning.
