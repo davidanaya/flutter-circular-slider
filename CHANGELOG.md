@@ -1,3 +1,7 @@
+## [1.1.3] - 2019-04-28
+
+- Add valid license.
+
 ## [1.1.2] - 2019-04-17
 
 - Fix typo in changelog.
