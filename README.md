@@ -10,11 +10,6 @@ A customizable circular slider for Flutter.
 - [Basic Usage](#basic-usage)
 - [Constructor](#constructor)
 - [Use Cases](#use-cases)
-  - [Basic](#basic)
-  - [Pagination](#pagination)
-  - [Control buttons](#control-buttons)
-  - [Controller](#controller)
-  - [Autoplay](#autoplay)
 
 ### Installation
 
