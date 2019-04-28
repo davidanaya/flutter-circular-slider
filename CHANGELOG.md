@@ -1,3 +1,7 @@
+## [1.1.4] - 2019-04-28
+
+- Update readme file.
+
 ## [1.1.3] - 2019-04-28
 
 - Add valid license.
