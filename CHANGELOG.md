@@ -1,6 +1,6 @@
 ## [2.5.0] - 2019-06-09
 
-- Add onSelectionEnd function to CircularSlider
+- Add onSelectionEnd callback function to CircularSlider
 
 ## [2.4.0] - 2019-06-09
 
