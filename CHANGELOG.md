@@ -1,3 +1,7 @@
+## [2.5.0] - 2019-06-09
+
+- Add onSelectionEnd function to CircularSlider
+
 ## [2.4.0] - 2019-06-09
 
 - Add feature in to count laps.
