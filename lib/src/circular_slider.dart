@@ -50,6 +50,10 @@ class CircularSlider extends StatefulWidget {
   /// (int init, int end) => void
   final Function onSelectionChange;
 
+  /// callback function when init and end finish
+  /// (int init, int end) => void
+  final Function onSelectionEnd;
+
   /// outter radius for the handlers
   final double handlerOutterRadius;
 
@@ -63,6 +67,7 @@ class CircularSlider extends StatefulWidget {
       this.selectionColor,
       this.handlerColor,
       this.onSelectionChange,
+      this.onSelectionEnd,
       this.handlerOutterRadius})
       : assert(init >= 0 && init <= intervals,
             'init has to be > 0 and < intervals value'),
@@ -106,6 +111,11 @@ class _CircularSliderState extends State<CircularSlider> {
               init = newInit;
               end = newEnd;
             });
+          },
+          onSelectionEnd: (newInit, newEnd) {
+            if (widget.onSelectionEnd != null) {
+              widget.onSelectionEnd(newInit, newEnd);
+            }
           },
           baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
           selectionColor:

@@ -11,6 +11,7 @@ class CircularSliderPaint extends StatefulWidget {
   final int primarySectors;
   final int secondarySectors;
   final Function onSelectionChange;
+  final Function onSelectionEnd;
   final Color baseColor;
   final Color selectionColor;
   final Color handlerColor;
@@ -25,6 +26,7 @@ class CircularSliderPaint extends StatefulWidget {
       @required this.primarySectors,
       @required this.secondarySectors,
       @required this.onSelectionChange,
+      @required this.onSelectionEnd,
       @required this.baseColor,
       @required this.selectionColor,
       @required this.handlerColor,
@@ -133,7 +135,20 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     }
   }
 
-  void _onPanEnd(_) {
+  void _onPanEnd(Offset details) {
+    RenderBox renderBox = context.findRenderObject();
+    var position = renderBox.globalToLocal(details);
+    
+    var angle = coordinatesToRadians(_painter.center, position);
+    var percentage = radiansToPercentage(angle);
+    var newValue = percentageToValue(percentage, widget.intervals);
+
+    if (_isInitHandlerSelected) {
+      widget.onSelectionEnd(newValue, widget.end);
+    } else {
+      widget.onSelectionEnd(widget.init, newValue);
+    }
+
     _isInitHandlerSelected = false;
     _isEndHandlerSelected = false;
   }
