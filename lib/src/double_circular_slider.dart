@@ -50,6 +50,10 @@ class DoubleCircularSlider extends StatefulWidget {
   /// (int init, int end) => void
   final SelectionChanged<int> onSelectionChange;
 
+  /// callback function when init and end finish
+  /// (int init, int end) => void
+  final Function onSelectionEnd;
+
   /// outter radius for the handlers
   final double handlerOutterRadius;
 
@@ -76,6 +80,7 @@ class DoubleCircularSlider extends StatefulWidget {
     this.selectionColor,
     this.handlerColor,
     this.onSelectionChange,
+    this.onSelectionEnd,
     this.handlerOutterRadius,
     this.showHandlerOutter,
     this.sliderStrokeWidth,
@@ -123,6 +128,11 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
               _init = newInit;
               _end = newEnd;
             });
+          },
+          onSelectionEnd: (newInit, newEnd) {
+            if (widget.onSelectionEnd != null) {
+              widget.onSelectionEnd(newInit, newEnd);
+            }
           },
           sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
           baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
