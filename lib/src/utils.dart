@@ -34,6 +34,15 @@ bool isPointInsideCircle(Offset point, Offset center, double radius) {
       point.dy > (center.dy - radius);
 }
 
+bool isPointAlongCircle(Offset point, double radius) {
+  // distance is root(sqr(x2 - x1) + sqr(y2 - y1))
+  // i.e., (7,8) and (3,2) -> 7.21
+  var d1 = pow(point.dx - radius, 2);
+  var d2 = pow(point.dy - radius, 2);
+  var distance = sqrt(d1 + d2);
+  return (distance - radius).abs() < 10;
+}
+
 double getSweepAngle(double init, double end) {
   if (end > init) {
     return end - init;

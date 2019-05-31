@@ -64,31 +64,37 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.blueGrey,
         body: Center(
-          child: Container(child: CircularSlider(100, 0, 20)),
+          child: Container(child: DoubleCircularSlider(100, 0, 20)),
         ));
   }
 }
 ```
 
+There are two different options:
+
+- SingleCircularSlider: has only one handler and can be moved either dragging the handler or just by clicking on different parts of the slider.
+- DoubleCircularSlider: has two handlers and both have to be moved by dragging them.
+
 ![Basic Slider](./doc/basic-slider.gif)
 
 ### Constructor
 
-| Parameter           |                  Default                  | Description                                                                                  |
-| :------------------ | :---------------------------------------: | :------------------------------------------------------------------------------------------- |
-| intervals           |                                           | The number of sections in which the circle will be divided for selection.                    |
-| init                |                                           | The initial value in the selection. Has to be bigger than 0 and smaller than intervals.      |
-| end                 |                                           | The end value in the selection. Has to be bigger than 0 and smaller than intervals.          |
-| height              |                   220.0                   | Height of the canvas where the slider is rendered.                                           |
-| width               |                   220.0                   | Width of the canvas where the slider is rendered.                                            |
-| primarySectors      |                     0                     | Number of sectors painted in the base circle. Painted in selectionColor.                     |
-| secondarySectors    |                     0                     | Number of secondary sectors painted in the base circle. Painted in baseColor.                |
-| child               |                   null                    | Widget that will be inserted in the center of the circular slider.                           |
-| onSelectionChange   | void onSelectionChange(int init, int end) | Triggered every time the user interacts with the slider and changes the init and end values. |
-| baseColor           |    Color.fromRGBO(255, 255, 255, 0.1)     | The color used for the base of the circle.                                                   |
-| selectionColor      |    Color.fromRGBO(255, 255, 255, 0.3)     | The color used for the selection in the circle.                                              |
-| handlerColor        |               Colors.white                | The color used for the handlers.                                                             |
-| handlerOutterRadius |                   12.0                    | The radius for the outter circle around the handler.                                         |
+| Parameter           |                  Default                  | Description                                                                                                             |
+| :------------------ | :---------------------------------------: | :---------------------------------------------------------------------------------------------------------------------- |
+| divisions           |                                           | The number of sections in which the circle will be divided for selection.                                               |
+| init                |                                           | (Only for DoubleCircularSlider) The initial value in the selection. Has to be bigger than 0 and smaller than divisions. |
+| end                 |                                           | (Only for DoubleCircularSlider) The end value in the selection. Has to be bigger than 0 and smaller than divisions.     |
+| position            |                                           | (Only for SingleCircularSlider) The selection. Has to be bigger than 0 and smaller than divisions.                      |
+| height              |                   220.0                   | Height of the canvas where the slider is rendered.                                                                      |
+| width               |                   220.0                   | Width of the canvas where the slider is rendered.                                                                       |
+| primarySectors      |                     0                     | Number of sectors painted in the base circle. Painted in selectionColor.                                                |
+| secondarySectors    |                     0                     | Number of secondary sectors painted in the base circle. Painted in baseColor.                                           |
+| child               |                   null                    | Widget that will be inserted in the center of the circular slider.                                                      |
+| onSelectionChange   | void onSelectionChange(int init, int end) | Triggered every time the user interacts with the slider and changes the init and end values.                            |
+| baseColor           |    Color.fromRGBO(255, 255, 255, 0.1)     | The color used for the base of the circle.                                                                              |
+| selectionColor      |    Color.fromRGBO(255, 255, 255, 0.3)     | The color used for the selection in the circle.                                                                         |
+| handlerColor        |               Colors.white                | The color used for the handlers.                                                                                        |
+| handlerOutterRadius |                   12.0                    | The radius for the outter circle around the handler.                                                                    |
 
 ### Use Cases
 
@@ -246,3 +252,5 @@ class _SleepPageState extends State<SleepPage> {
 ```
 
 ![Sleep Slider](./doc/sleep-slider.gif)
+
+![Sleep Single Slider](./doc/single-slider.gif)

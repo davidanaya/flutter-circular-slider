@@ -1,22 +1,26 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_circular_slider/src/utils.dart';
+
+import 'utils.dart';
 
 class BasePainter extends CustomPainter {
   Color baseColor;
   Color selectionColor;
   int primarySectors;
   int secondarySectors;
+  Function onCalculatedRadius;
 
   Offset center;
   double radius;
 
-  BasePainter(
-      {@required this.baseColor,
-      @required this.selectionColor,
-      @required this.primarySectors,
-      @required this.secondarySectors});
+  BasePainter({
+    @required this.baseColor,
+    @required this.selectionColor,
+    @required this.primarySectors,
+    @required this.secondarySectors,
+    this.onCalculatedRadius,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -24,6 +28,8 @@ class BasePainter extends CustomPainter {
 
     center = Offset(size.width / 2, size.height / 2);
     radius = min(size.width / 2, size.height / 2);
+    // we need this in the parent to calculate if the user clicks on the circumference
+    onCalculatedRadius(radius);
 
     assert(radius > 0);
 

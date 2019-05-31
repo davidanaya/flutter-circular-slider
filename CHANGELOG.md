@@ -1,3 +1,7 @@
+## [2.0.0] - 2019-05-31
+
+- Replace CircularSlider with SingleCircularSlider and DoubleCircularSlider.
+
 ## [1.1.4] - 2019-04-28
 
 - Update readme file.

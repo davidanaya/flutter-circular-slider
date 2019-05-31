@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_circular_slider/src/circular_slider_paint.dart';
+import 'circular_slider_paint.dart';
 
 /// Returns a widget which displays a circle to be used as a slider.
 ///
-/// Required arguments are init and end to set the initial selection.
+/// Required arguments are position and divisions to set the initial selection.
 /// onSelectionChange is a callback function which returns new values as the user
 /// changes the interval.
 /// The rest of the params are used to change the look and feel.
 ///
-///     CircularSlider(5, 10, onSelectionChange: () => {});
-class CircularSlider extends StatefulWidget {
-  /// the selection will be values between 0..intervals; max value is 300
-  final int intervals;
+///     SingleCircularSlider(5, 10, onSelectionChange: () => {});
+class SingleCircularSlider extends StatefulWidget {
+  /// the selection will be values between 0..divisions; max value is 300
+  final int divisions;
 
   /// the initial value in the selection
-  final int init;
-
-  /// the end value in the selection
-  final int end;
+  final int position;
 
   /// the number of primary sectors to be painted
   /// will be painted using selectionColor
@@ -53,37 +50,35 @@ class CircularSlider extends StatefulWidget {
   /// outter radius for the handlers
   final double handlerOutterRadius;
 
-  CircularSlider(this.intervals, this.init, this.end,
-      {this.height,
-      this.width,
-      this.child,
-      this.primarySectors,
-      this.secondarySectors,
-      this.baseColor,
-      this.selectionColor,
-      this.handlerColor,
-      this.onSelectionChange,
-      this.handlerOutterRadius})
-      : assert(init >= 0 && init <= intervals,
-            'init has to be > 0 and < intervals value'),
-        assert(end >= 0 && end <= intervals,
-            'end has to be > 0 and < intervals value'),
-        assert(intervals >= 0 && intervals <= 300,
-            'intervals has to be > 0 and <= 300');
+  SingleCircularSlider(
+    this.divisions,
+    this.position, {
+    this.height,
+    this.width,
+    this.child,
+    this.primarySectors,
+    this.secondarySectors,
+    this.baseColor,
+    this.selectionColor,
+    this.handlerColor,
+    this.onSelectionChange,
+    this.handlerOutterRadius,
+  })  : assert(position >= 0 && position <= divisions,
+            'init has to be > 0 and < divisions value'),
+        assert(divisions >= 0 && divisions <= 300,
+            'divisions has to be > 0 and <= 300');
 
   @override
-  _CircularSliderState createState() => _CircularSliderState();
+  _SingleCircularSliderState createState() => _SingleCircularSliderState();
 }
 
-class _CircularSliderState extends State<CircularSlider> {
-  int init;
-  int end;
+class _SingleCircularSliderState extends State<SingleCircularSlider> {
+  int _end;
 
   @override
   void initState() {
     super.initState();
-    init = widget.init;
-    end = widget.end;
+    _end = widget.position;
   }
 
   @override
@@ -92,9 +87,10 @@ class _CircularSliderState extends State<CircularSlider> {
         height: widget.height ?? 220,
         width: widget.width ?? 220,
         child: CircularSliderPaint(
-          init: init,
-          end: end,
-          intervals: widget.intervals,
+          mode: CircularSliderMode.singleHandler,
+          init: 0,
+          end: _end,
+          divisions: widget.divisions,
           primarySectors: widget.primarySectors ?? 0,
           secondarySectors: widget.secondarySectors ?? 0,
           child: widget.child,
@@ -103,8 +99,7 @@ class _CircularSliderState extends State<CircularSlider> {
               widget.onSelectionChange(newInit, newEnd);
             }
             setState(() {
-              init = newInit;
-              end = newEnd;
+              _end = newEnd;
             });
           },
           baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),

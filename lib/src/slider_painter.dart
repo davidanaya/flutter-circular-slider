@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_circular_slider/src/utils.dart';
+
+import 'circular_slider_paint.dart' show CircularSliderMode;
+import 'utils.dart';
 
 class SliderPainter extends CustomPainter {
+  CircularSliderMode mode;
   double startAngle;
   double endAngle;
   double sweepAngle;
@@ -16,18 +19,18 @@ class SliderPainter extends CustomPainter {
   Offset center;
   double radius;
 
-  SliderPainter(
-      {@required this.startAngle,
-      @required this.endAngle,
-      @required this.sweepAngle,
-      @required this.selectionColor,
-      @required this.handlerColor,
-      @required this.handlerOutterRadius});
+  SliderPainter({
+    @required this.mode,
+    @required this.startAngle,
+    @required this.endAngle,
+    @required this.sweepAngle,
+    @required this.selectionColor,
+    @required this.handlerColor,
+    @required this.handlerOutterRadius,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (startAngle == 0.0 && endAngle == 0.0) return;
-
     Paint progress = _getPaint(color: selectionColor);
 
     center = Offset(size.width / 2, size.height / 2);
@@ -40,9 +43,11 @@ class SliderPainter extends CustomPainter {
     Paint handlerOutter = _getPaint(color: handlerColor, width: 2.0);
 
     // draw handlers
-    initHandler = radiansToCoordinates(center, -pi / 2 + startAngle, radius);
-    canvas.drawCircle(initHandler, 8.0, handler);
-    canvas.drawCircle(initHandler, handlerOutterRadius, handlerOutter);
+    if (mode == CircularSliderMode.doubleHandler) {
+      initHandler = radiansToCoordinates(center, -pi / 2 + startAngle, radius);
+      canvas.drawCircle(initHandler, 8.0, handler);
+      canvas.drawCircle(initHandler, handlerOutterRadius, handlerOutter);
+    }
 
     endHandler = radiansToCoordinates(center, -pi / 2 + endAngle, radius);
     canvas.drawCircle(endHandler, 8.0, handler);
@@ -52,7 +57,7 @@ class SliderPainter extends CustomPainter {
   Paint _getPaint({@required Color color, double width, PaintingStyle style}) =>
       Paint()
         ..color = color
-        ..strokeCap = StrokeCap.round
+        ..strokeCap = StrokeCap.butt
         ..style = style ?? PaintingStyle.stroke
         ..strokeWidth = width ?? 12.0;
 
