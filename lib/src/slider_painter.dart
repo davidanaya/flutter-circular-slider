@@ -13,6 +13,8 @@ class SliderPainter extends CustomPainter {
   Color selectionColor;
   Color handlerColor;
   double handlerOutterRadius;
+  bool showRoundedCapInSelection;
+  bool showHandlerOutter;
 
   Offset initHandler;
   Offset endHandler;
@@ -27,6 +29,8 @@ class SliderPainter extends CustomPainter {
     @required this.selectionColor,
     @required this.handlerColor,
     @required this.handlerOutterRadius,
+    @required this.showRoundedCapInSelection,
+    @required this.showHandlerOutter,
   });
 
   @override
@@ -51,13 +55,16 @@ class SliderPainter extends CustomPainter {
 
     endHandler = radiansToCoordinates(center, -pi / 2 + endAngle, radius);
     canvas.drawCircle(endHandler, 8.0, handler);
-    canvas.drawCircle(endHandler, handlerOutterRadius, handlerOutter);
+    if (showHandlerOutter) {
+      canvas.drawCircle(endHandler, handlerOutterRadius, handlerOutter);
+    }
   }
 
   Paint _getPaint({@required Color color, double width, PaintingStyle style}) =>
       Paint()
         ..color = color
-        ..strokeCap = StrokeCap.butt
+        ..strokeCap =
+            showRoundedCapInSelection ? StrokeCap.round : StrokeCap.butt
         ..style = style ?? PaintingStyle.stroke
         ..strokeWidth = width ?? 12.0;
 

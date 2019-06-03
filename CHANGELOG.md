@@ -1,3 +1,7 @@
+## [2.1.0] - 2019-06-03
+
+- Add showRoundedCapInSelection and showHandlerOutter configuration parameters.
+
 ## [2.0.0] - 2019-05-31
 
 - Replace CircularSlider with SingleCircularSlider and DoubleCircularSlider.

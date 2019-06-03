@@ -50,6 +50,12 @@ class SingleCircularSlider extends StatefulWidget {
   /// outter radius for the handlers
   final double handlerOutterRadius;
 
+  /// if true will paint a rounded cap in the selection slider start
+  final bool showRoundedCapInSelection;
+
+  /// if true an extra handler ring will be displayed in the handler
+  final bool showHandlerOutter;
+
   SingleCircularSlider(
     this.divisions,
     this.position, {
@@ -63,6 +69,8 @@ class SingleCircularSlider extends StatefulWidget {
     this.handlerColor,
     this.onSelectionChange,
     this.handlerOutterRadius,
+    this.showRoundedCapInSelection,
+    this.showHandlerOutter,
   })  : assert(position >= 0 && position <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(divisions >= 0 && divisions <= 300,
@@ -107,6 +115,8 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
               widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),
           handlerColor: widget.handlerColor ?? Colors.white,
           handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
+          showRoundedCapInSelection: widget.showRoundedCapInSelection ?? false,
+          showHandlerOutter: widget.showHandlerOutter ?? true,
         ));
   }
 }

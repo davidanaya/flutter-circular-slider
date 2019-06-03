@@ -95,6 +95,8 @@ class _SleepPageState extends State<SleepPage> {
           handlerColor: Colors.white,
           handlerOutterRadius: 12.0,
           onSelectionChange: _updateLabels,
+          showRoundedCapInSelection: true,
+          showHandlerOutter: false,
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Center(

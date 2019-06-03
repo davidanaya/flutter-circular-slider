@@ -20,6 +20,8 @@ class CircularSliderPaint extends StatefulWidget {
   final Color handlerColor;
   final double handlerOutterRadius;
   final Widget child;
+  final bool showRoundedCapInSelection;
+  final bool showHandlerOutter;
 
   CircularSliderPaint({
     @required this.mode,
@@ -34,6 +36,8 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.selectionColor,
     @required this.handlerColor,
     @required this.handlerOutterRadius,
+    @required this.showRoundedCapInSelection,
+    @required this.showHandlerOutter,
   });
 
   @override
@@ -123,6 +127,8 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       selectionColor: widget.selectionColor,
       handlerColor: widget.handlerColor,
       handlerOutterRadius: widget.handlerOutterRadius,
+      showRoundedCapInSelection: widget.showRoundedCapInSelection,
+      showHandlerOutter: widget.showHandlerOutter,
     );
   }
 
