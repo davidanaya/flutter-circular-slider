@@ -202,7 +202,6 @@ class CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
 
   @override
   void addPointer(PointerEvent event) {
-    print('addPointer $event');
     if (onPanDown(event.position)) {
       startTrackingPointer(event.pointer);
       resolve(GestureDisposition.accepted);
@@ -217,7 +216,6 @@ class CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
       onPanUpdate(event.position);
     }
     if (event is PointerUpEvent) {
-      print('handleEvent $event');
       onPanEnd(event.position);
       stopTrackingPointer(event.pointer);
     }
