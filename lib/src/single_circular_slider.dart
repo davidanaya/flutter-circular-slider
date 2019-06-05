@@ -56,6 +56,9 @@ class SingleCircularSlider extends StatefulWidget {
   /// if true an extra handler ring will be displayed in the handler
   final bool showHandlerOutter;
 
+  /// stroke width for the slider, defaults at 12.0
+  final double sliderStrokeWidth;
+
   SingleCircularSlider(
     this.divisions,
     this.position, {
@@ -71,6 +74,7 @@ class SingleCircularSlider extends StatefulWidget {
     this.handlerOutterRadius,
     this.showRoundedCapInSelection,
     this.showHandlerOutter,
+    this.sliderStrokeWidth,
   })  : assert(position >= 0 && position <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(divisions >= 0 && divisions <= 300,
@@ -110,6 +114,7 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
               _end = newEnd;
             });
           },
+          sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
           baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
           selectionColor:
               widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),

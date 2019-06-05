@@ -22,6 +22,7 @@ class CircularSliderPaint extends StatefulWidget {
   final Widget child;
   final bool showRoundedCapInSelection;
   final bool showHandlerOutter;
+  final double sliderStrokeWidth;
 
   CircularSliderPaint({
     @required this.mode,
@@ -38,6 +39,7 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.handlerOutterRadius,
     @required this.showRoundedCapInSelection,
     @required this.showHandlerOutter,
+    @required this.sliderStrokeWidth,
   });
 
   @override
@@ -86,9 +88,10 @@ class _CircularSliderState extends State<CircularSliderPaint> {
         CustomPanGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<CustomPanGestureRecognizer>(
           () => CustomPanGestureRecognizer(
-              onPanDown: _onPanDown,
-              onPanUpdate: _onPanUpdate,
-              onPanEnd: _onPanEnd),
+                onPanDown: _onPanDown,
+                onPanUpdate: _onPanUpdate,
+                onPanEnd: _onPanEnd,
+              ),
           (CustomPanGestureRecognizer instance) {},
         ),
       },
@@ -98,6 +101,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
             selectionColor: widget.selectionColor,
             primarySectors: widget.primarySectors,
             secondarySectors: widget.secondarySectors,
+            sliderStrokeWidth: widget.sliderStrokeWidth,
             onCalculatedRadius: (double radius) => _sliderRadius = radius),
         foregroundPainter: _painter,
         child: Padding(
@@ -129,6 +133,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       handlerOutterRadius: widget.handlerOutterRadius,
       showRoundedCapInSelection: widget.showRoundedCapInSelection,
       showHandlerOutter: widget.showHandlerOutter,
+      sliderStrokeWidth: widget.sliderStrokeWidth,
     );
   }
 
@@ -189,13 +194,15 @@ class CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
   final Function onPanUpdate;
   final Function onPanEnd;
 
-  CustomPanGestureRecognizer(
-      {@required this.onPanDown,
-      @required this.onPanUpdate,
-      @required this.onPanEnd});
+  CustomPanGestureRecognizer({
+    @required this.onPanDown,
+    @required this.onPanUpdate,
+    @required this.onPanEnd,
+  });
 
   @override
   void addPointer(PointerEvent event) {
+    print('addPointer $event');
     if (onPanDown(event.position)) {
       startTrackingPointer(event.pointer);
       resolve(GestureDisposition.accepted);
@@ -210,6 +217,7 @@ class CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
       onPanUpdate(event.position);
     }
     if (event is PointerUpEvent) {
+      print('handleEvent $event');
       onPanEnd(event.position);
       stopTrackingPointer(event.pointer);
     }

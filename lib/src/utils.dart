@@ -27,7 +27,9 @@ double valueToPercentage(int time, int intervals) => (time / intervals) * 100;
 int percentageToValue(double percentage, int intervals) =>
     (percentage * intervals) ~/ 100;
 
-bool isPointInsideCircle(Offset point, Offset center, double radius) {
+bool isPointInsideCircle(Offset point, Offset center, double rradius) {
+  print('point $point -- center $center -- radius $rradius');
+  var radius = rradius * 3;
   return point.dx < (center.dx + radius) &&
       point.dx > (center.dx - radius) &&
       point.dy < (center.dy + radius) &&

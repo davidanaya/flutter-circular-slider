@@ -10,6 +10,7 @@ class BasePainter extends CustomPainter {
   int primarySectors;
   int secondarySectors;
   Function onCalculatedRadius;
+  double sliderStrokeWidth;
 
   Offset center;
   double radius;
@@ -19,6 +20,7 @@ class BasePainter extends CustomPainter {
     @required this.selectionColor,
     @required this.primarySectors,
     @required this.secondarySectors,
+    @required this.sliderStrokeWidth,
     this.onCalculatedRadius,
   });
 
@@ -27,7 +29,7 @@ class BasePainter extends CustomPainter {
     Paint base = _getPaint(color: baseColor);
 
     center = Offset(size.width / 2, size.height / 2);
-    radius = min(size.width / 2, size.height / 2);
+    radius = min(size.width / 2, size.height / 2) - sliderStrokeWidth;
     // we need this in the parent to calculate if the user clicks on the circumference
     onCalculatedRadius(radius);
 
@@ -69,7 +71,7 @@ class BasePainter extends CustomPainter {
         ..color = color
         ..strokeCap = StrokeCap.round
         ..style = style ?? PaintingStyle.stroke
-        ..strokeWidth = width ?? 12.0;
+        ..strokeWidth = width ?? sliderStrokeWidth;
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {

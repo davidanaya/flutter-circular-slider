@@ -83,30 +83,8 @@ class _SleepPageState extends State<SleepPage> {
           'How long did you stay in bed?',
           style: TextStyle(color: Colors.white),
         ),
-        SingleCircularSlider(
-          288,
-          endTime,
-          height: 220.0,
-          width: 220.0,
-          primarySectors: 6,
-          secondarySectors: 24,
-          baseColor: Color.fromRGBO(255, 255, 255, 0.1),
-          selectionColor: baseColor,
-          handlerColor: Colors.white,
-          handlerOutterRadius: 12.0,
-          onSelectionChange: _updateLabels,
-          showRoundedCapInSelection: true,
-          showHandlerOutter: false,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Center(
-                child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
-                    style: TextStyle(fontSize: 36.0, color: Colors.white))),
-          ),
-        ),
-        // DoubleCircularSlider(
+        // SingleCircularSlider(
         //   288,
-        //   initTime,
         //   endTime,
         //   height: 220.0,
         //   width: 220.0,
@@ -117,15 +95,36 @@ class _SleepPageState extends State<SleepPage> {
         //   handlerColor: Colors.white,
         //   handlerOutterRadius: 12.0,
         //   onSelectionChange: _updateLabels,
+        //   showRoundedCapInSelection: true,
+        //   showHandlerOutter: false,
         //   child: Padding(
         //     padding: const EdgeInsets.all(12.0),
         //     child: Center(
-        //         child: Text(
-        //             '${_formatIntervalTime(inBedTime, outBedTime)}',
-        //             style:
-        //                 TextStyle(fontSize: 36.0, color: Colors.white))),
+        //         child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
+        //             style: TextStyle(fontSize: 36.0, color: Colors.white))),
         //   ),
         // ),
+        DoubleCircularSlider(
+          288,
+          initTime,
+          endTime,
+          height: 260.0,
+          width: 260.0,
+          primarySectors: 6,
+          secondarySectors: 24,
+          baseColor: Color.fromRGBO(255, 255, 255, 0.1),
+          selectionColor: baseColor,
+          handlerColor: Colors.white,
+          handlerOutterRadius: 12.0,
+          onSelectionChange: _updateLabels,
+          sliderStrokeWidth: 12.0,
+          child: Padding(
+            padding: const EdgeInsets.all(42.0),
+            child: Center(
+                child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
+                    style: TextStyle(fontSize: 36.0, color: Colors.white))),
+          ),
+        ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           _formatBedTime('IN THE', inBedTime),
           _formatBedTime('OUT OF', outBedTime),

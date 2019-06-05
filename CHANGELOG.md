@@ -1,3 +1,7 @@
+## [2.2.0] - 2019-06-03
+
+- Add sliderStrokeWidth parameter and fix issue affecting the gesture detection.
+
 ## [2.1.0] - 2019-06-03
 
 - Add showRoundedCapInSelection and showHandlerOutter configuration parameters.

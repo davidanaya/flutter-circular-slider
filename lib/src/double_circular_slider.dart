@@ -56,6 +56,9 @@ class DoubleCircularSlider extends StatefulWidget {
   /// if true an extra handler ring will be displayed in the handler
   final bool showHandlerOutter;
 
+  /// stroke width for the slider, defaults at 12.0
+  final double sliderStrokeWidth;
+
   DoubleCircularSlider(
     this.divisions,
     this.init,
@@ -71,6 +74,7 @@ class DoubleCircularSlider extends StatefulWidget {
     this.onSelectionChange,
     this.handlerOutterRadius,
     this.showHandlerOutter,
+    this.sliderStrokeWidth,
   })  : assert(init >= 0 && init <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(end >= 0 && end <= divisions,
@@ -115,6 +119,7 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
               _end = newEnd;
             });
           },
+          sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
           baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
           selectionColor:
               widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),

@@ -15,6 +15,7 @@ class SliderPainter extends CustomPainter {
   double handlerOutterRadius;
   bool showRoundedCapInSelection;
   bool showHandlerOutter;
+  double sliderStrokeWidth;
 
   Offset initHandler;
   Offset endHandler;
@@ -31,6 +32,7 @@ class SliderPainter extends CustomPainter {
     @required this.handlerOutterRadius,
     @required this.showRoundedCapInSelection,
     @required this.showHandlerOutter,
+    @required this.sliderStrokeWidth,
   });
 
   @override
@@ -38,7 +40,7 @@ class SliderPainter extends CustomPainter {
     Paint progress = _getPaint(color: selectionColor);
 
     center = Offset(size.width / 2, size.height / 2);
-    radius = min(size.width / 2, size.height / 2);
+    radius = min(size.width / 2, size.height / 2) - sliderStrokeWidth;
 
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
         -pi / 2 + startAngle, sweepAngle, false, progress);
@@ -66,7 +68,7 @@ class SliderPainter extends CustomPainter {
         ..strokeCap =
             showRoundedCapInSelection ? StrokeCap.round : StrokeCap.butt
         ..style = style ?? PaintingStyle.stroke
-        ..strokeWidth = width ?? 12.0;
+        ..strokeWidth = width ?? sliderStrokeWidth;
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {

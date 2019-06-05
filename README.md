@@ -97,6 +97,7 @@ There are two different options:
 | handlerOutterRadius       |                   12.0                    | The radius for the outter circle around the handler.                                                                    |
 | showRoundedCapInSelection |                   false                   | (Only for SingleCircularSlider) Shows a rounded cap at the edge of the selection slider with no handler.                |
 | showHandlerOutter         |                   true                    | If true will display an extra ring around the handlers.                                                                 |
+| sliderStrokeWidth         |                   12.0                    | The stroke width for the slider (thickness).                                                                            |
 
 ### Use Cases
 
