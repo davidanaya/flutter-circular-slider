@@ -1,4 +1,8 @@
-## [2.2.0] - 2019-06-03
+## [2.2.1] - 2019-06-05
+
+- Remove prints from debug.
+
+## [2.2.0] - 2019-06-05
 
 - Add sliderStrokeWidth parameter and fix issue affecting the gesture detection.
 
