@@ -47,6 +47,10 @@ class SingleCircularSlider extends StatefulWidget {
   /// (int init, int end) => void
   final SelectionChanged<int> onSelectionChange;
 
+  /// callback function when init and end finish
+  /// (int init, int end) => void
+  final Function onSelectionEnd;
+
   /// outter radius for the handlers
   final double handlerOutterRadius;
 
@@ -75,6 +79,7 @@ class SingleCircularSlider extends StatefulWidget {
     this.selectionColor,
     this.handlerColor,
     this.onSelectionChange,
+    this.onSelectionEnd,
     this.handlerOutterRadius,
     this.showRoundedCapInSelection,
     this.showHandlerOutter,
@@ -118,6 +123,11 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
             setState(() {
               _end = newEnd;
             });
+          },
+          onSelectionEnd: (newInit, newEnd) {
+            if (widget.onSelectionEnd != null) {
+              widget.onSelectionEnd(newInit, newEnd);
+            }
           },
           sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
           baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
