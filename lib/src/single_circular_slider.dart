@@ -45,7 +45,7 @@ class SingleCircularSlider extends StatefulWidget {
 
   /// callback function when init and end change
   /// (int init, int end) => void
-  final Function onSelectionChange;
+  final SelectionChanged<int> onSelectionChange;
 
   /// outter radius for the handlers
   final double handlerOutterRadius;
@@ -58,6 +58,10 @@ class SingleCircularSlider extends StatefulWidget {
 
   /// stroke width for the slider, defaults at 12.0
   final double sliderStrokeWidth;
+
+  /// if true, the onSelectionChange will also return the number of laps in the slider
+  /// otherwise, everytime the user completes a full lap, the selection restarts from 0
+  final bool shouldCountLaps;
 
   SingleCircularSlider(
     this.divisions,
@@ -75,6 +79,7 @@ class SingleCircularSlider extends StatefulWidget {
     this.showRoundedCapInSelection,
     this.showHandlerOutter,
     this.sliderStrokeWidth,
+    this.shouldCountLaps,
   })  : assert(position >= 0 && position <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(divisions >= 0 && divisions <= 300,
@@ -106,9 +111,9 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
           primarySectors: widget.primarySectors ?? 0,
           secondarySectors: widget.secondarySectors ?? 0,
           child: widget.child,
-          onSelectionChange: (newInit, newEnd) {
+          onSelectionChange: (newInit, newEnd, laps) {
             if (widget.onSelectionChange != null) {
-              widget.onSelectionChange(newInit, newEnd);
+              widget.onSelectionChange(newInit, newEnd, laps);
             }
             setState(() {
               _end = newEnd;
@@ -122,6 +127,7 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
           handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
           showRoundedCapInSelection: widget.showRoundedCapInSelection ?? false,
           showHandlerOutter: widget.showHandlerOutter ?? true,
+          shouldCountLaps: widget.shouldCountLaps ?? false,
         ));
   }
 }

@@ -51,6 +51,7 @@ class _SleepPageState extends State<SleepPage> {
 
   int inBedTime;
   int outBedTime;
+  int days = 0;
 
   @override
   void initState() {
@@ -67,10 +68,11 @@ class _SleepPageState extends State<SleepPage> {
     });
   }
 
-  void _updateLabels(int init, int end) {
+  void _updateLabels(int init, int end, int laps) {
     setState(() {
       inBedTime = init;
       outBedTime = end;
+      days = laps;
     });
   }
 
@@ -98,11 +100,21 @@ class _SleepPageState extends State<SleepPage> {
         //   showRoundedCapInSelection: true,
         //   showHandlerOutter: false,
         //   child: Padding(
-        //     padding: const EdgeInsets.all(12.0),
-        //     child: Center(
-        //         child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
-        //             style: TextStyle(fontSize: 36.0, color: Colors.white))),
-        //   ),
+        //       padding: const EdgeInsets.all(42.0),
+        //       child: Column(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         children: [
+        //           SizedBox(height: 20),
+        //           Text('${_formatIntervalTime(inBedTime, outBedTime)}',
+        //               style: TextStyle(fontSize: 24.0, color: Colors.white)),
+        //           Text('${_formatDays(days)}',
+        //               style: TextStyle(
+        //                   fontSize: 16.0,
+        //                   color: Colors.white,
+        //                   fontStyle: FontStyle.italic)),
+        //         ],
+        //       )),
+        //   shouldCountLaps: true,
         // ),
         DoubleCircularSlider(
           288,
@@ -119,11 +131,21 @@ class _SleepPageState extends State<SleepPage> {
           onSelectionChange: _updateLabels,
           sliderStrokeWidth: 12.0,
           child: Padding(
-            padding: const EdgeInsets.all(42.0),
-            child: Center(
-                child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
-                    style: TextStyle(fontSize: 36.0, color: Colors.white))),
-          ),
+              padding: const EdgeInsets.all(42.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 30),
+                  Text('${_formatIntervalTime(inBedTime, outBedTime)}',
+                      style: TextStyle(fontSize: 36.0, color: Colors.white)),
+                  Text('${_formatDays(days)}',
+                      style: TextStyle(
+                          fontSize: 28.0,
+                          color: Colors.white,
+                          fontStyle: FontStyle.italic)),
+                ],
+              )),
+          shouldCountLaps: true,
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           _formatBedTime('IN THE', inBedTime),
@@ -153,6 +175,10 @@ class _SleepPageState extends State<SleepPage> {
         )
       ],
     );
+  }
+
+  String _formatDays(int days) {
+    return days > 0 ? ' (+$days)' : '';
   }
 
   String _formatTime(int time) {

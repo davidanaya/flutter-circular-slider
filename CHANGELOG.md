@@ -1,3 +1,7 @@
+## [2.4.0] - 2019-06-09
+
+- Add feature in to count laps.
+
 ## [2.3.0] - 2019-06-09
 
 - Add feature in DoubleCircularSlider to move the whole selection by clicking and dragging on it.

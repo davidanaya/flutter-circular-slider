@@ -7,6 +7,10 @@ import 'utils.dart';
 
 enum CircularSliderMode { singleHandler, doubleHandler }
 
+enum SlidingState { none, endIsBiggerThanStart, endIsSmallerThanStart }
+
+typedef SelectionChanged<T> = void Function(T a, T b, T c);
+
 class CircularSliderPaint extends StatefulWidget {
   final CircularSliderMode mode;
   final int init;
@@ -14,7 +18,7 @@ class CircularSliderPaint extends StatefulWidget {
   final int divisions;
   final int primarySectors;
   final int secondarySectors;
-  final Function onSelectionChange;
+  final SelectionChanged<int> onSelectionChange;
   final Color baseColor;
   final Color selectionColor;
   final Color handlerColor;
@@ -23,6 +27,7 @@ class CircularSliderPaint extends StatefulWidget {
   final bool showRoundedCapInSelection;
   final bool showHandlerOutter;
   final double sliderStrokeWidth;
+  final bool shouldCountLaps;
 
   CircularSliderPaint({
     @required this.mode,
@@ -40,6 +45,7 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.showRoundedCapInSelection,
     @required this.showHandlerOutter,
     @required this.sliderStrokeWidth,
+    @required this.shouldCountLaps,
   });
 
   @override
@@ -65,6 +71,12 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   /// this will capture the position in the selection relative to the initial handler
   /// that way we will be able to keep the selection constant when moving
   int _differenceFromInitPoint;
+
+  /// will store the number of full laps (2pi radians) as part of the selection
+  int _laps = 0;
+
+  /// will be used to calculate in the next movement if we need to increase or decrease _laps
+  SlidingState _slidingState = SlidingState.none;
 
   bool get isDoubleHandler => widget.mode == CircularSliderMode.doubleHandler;
 
@@ -130,9 +142,35 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     var endPercent = valueToPercentage(widget.end, widget.divisions);
     var sweep = getSweepAngle(initPercent, endPercent);
 
+    var previousStartAngle = _startAngle;
+    var previousEndAngle = _endAngle;
+
     _startAngle = isDoubleHandler ? percentageToRadians(initPercent) : 0.0;
     _endAngle = percentageToRadians(endPercent);
     _sweepAngle = percentageToRadians(sweep.abs());
+
+    // update full laps if need be
+    if (widget.shouldCountLaps) {
+      var newSlidingState = _calculateSlidingState(_startAngle, _endAngle);
+      if (isSingleHandler) {
+        _laps = _calculateLapsForsSingleHandler(
+            _endAngle, previousEndAngle, _slidingState, _laps);
+        _slidingState = newSlidingState;
+      } else {
+        // is double handler
+        if (newSlidingState != _slidingState) {
+          _laps = _calculateLapsForDoubleHandler(
+              _startAngle,
+              _endAngle,
+              previousStartAngle,
+              previousEndAngle,
+              _slidingState,
+              newSlidingState,
+              _laps);
+          _slidingState = newSlidingState;
+        }
+      }
+    }
 
     _painter = SliderPainter(
       mode: widget.mode,
@@ -146,6 +184,44 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       showHandlerOutter: widget.showHandlerOutter,
       sliderStrokeWidth: widget.sliderStrokeWidth,
     );
+  }
+
+  int _calculateLapsForsSingleHandler(
+      double end, double prevEnd, SlidingState slidingState, int laps) {
+    if (slidingState != SlidingState.none) {
+      if (radiansWasModuloed(end, prevEnd)) {
+        var lapIncrement = end < prevEnd ? 1 : -1;
+        var newLaps = laps + lapIncrement;
+        return newLaps < 0 ? 0 : newLaps;
+      }
+    }
+    return laps;
+  }
+
+  int _calculateLapsForDoubleHandler(
+      double start,
+      double end,
+      double prevStart,
+      double prevEnd,
+      SlidingState slidingState,
+      SlidingState newSlidingState,
+      int laps) {
+    if (slidingState != SlidingState.none) {
+      if (!radiansWasModuloed(start, prevStart) &&
+          !radiansWasModuloed(end, prevEnd)) {
+        var lapIncrement =
+            newSlidingState == SlidingState.endIsBiggerThanStart ? 1 : -1;
+        var newLaps = laps + lapIncrement;
+        return newLaps < 0 ? 0 : newLaps;
+      }
+    }
+    return laps;
+  }
+
+  SlidingState _calculateSlidingState(double start, double end) {
+    return end > start
+        ? SlidingState.endIsBiggerThanStart
+        : SlidingState.endIsSmallerThanStart;
   }
 
   void _onPanUpdate(Offset details) {
@@ -168,21 +244,21 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       if (newValueInit != widget.init) {
         var newValueEnd =
             (widget.end + (newValueInit - widget.init)) % widget.divisions;
-        widget.onSelectionChange(newValueInit, newValueEnd);
+        widget.onSelectionChange(newValueInit, newValueEnd, _laps);
       }
       return;
     }
 
     if (isSingleHandler) {
-      widget.onSelectionChange(widget.init, newValue);
+      widget.onSelectionChange(widget.init, newValue, _laps);
       return;
     }
 
     // isDoubleHandler but one handler was selected
     if (_isInitHandlerSelected) {
-      widget.onSelectionChange(newValue, widget.end);
+      widget.onSelectionChange(newValue, widget.end, _laps);
     } else {
-      widget.onSelectionChange(widget.init, newValue);
+      widget.onSelectionChange(widget.init, newValue, _laps);
     }
   }
 

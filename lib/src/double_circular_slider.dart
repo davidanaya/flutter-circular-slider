@@ -48,7 +48,7 @@ class DoubleCircularSlider extends StatefulWidget {
 
   /// callback function when init and end change
   /// (int init, int end) => void
-  final Function onSelectionChange;
+  final SelectionChanged<int> onSelectionChange;
 
   /// outter radius for the handlers
   final double handlerOutterRadius;
@@ -58,6 +58,10 @@ class DoubleCircularSlider extends StatefulWidget {
 
   /// stroke width for the slider, defaults at 12.0
   final double sliderStrokeWidth;
+
+  /// if true, the onSelectionChange will also return the number of laps in the slider
+  /// otherwise, everytime the user completes a full lap, the selection restarts from 0
+  final bool shouldCountLaps;
 
   DoubleCircularSlider(
     this.divisions,
@@ -75,6 +79,7 @@ class DoubleCircularSlider extends StatefulWidget {
     this.handlerOutterRadius,
     this.showHandlerOutter,
     this.sliderStrokeWidth,
+    this.shouldCountLaps,
   })  : assert(init >= 0 && init <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(end >= 0 && end <= divisions,
@@ -110,9 +115,9 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
           primarySectors: widget.primarySectors ?? 0,
           secondarySectors: widget.secondarySectors ?? 0,
           child: widget.child,
-          onSelectionChange: (newInit, newEnd) {
+          onSelectionChange: (newInit, newEnd, laps) {
             if (widget.onSelectionChange != null) {
-              widget.onSelectionChange(newInit, newEnd);
+              widget.onSelectionChange(newInit, newEnd, laps);
             }
             setState(() {
               _init = newInit;
@@ -127,6 +132,7 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
           handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
           showRoundedCapInSelection: false,
           showHandlerOutter: widget.showHandlerOutter ?? true,
+          shouldCountLaps: widget.shouldCountLaps ?? false,
         ));
   }
 }

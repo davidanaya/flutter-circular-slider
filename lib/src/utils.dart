@@ -67,3 +67,9 @@ bool isAngleInsideRadiansSelection(double angle, double start, double sweep) {
       ? normalized > start && normalized < end
       : normalized > start || normalized < end;
 }
+
+// this is not 100% accurate but it works
+// we just want to see if a value changed drastically its value
+bool radiansWasModuloed(double current, double previous) {
+  return (previous - current).abs() > (3 * pi / 2);
+}
