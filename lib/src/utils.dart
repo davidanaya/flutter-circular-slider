@@ -25,21 +25,21 @@ Offset radiansToCoordinates(Offset center, double radians, double radius) {
 double valueToPercentage(int time, int intervals) => (time / intervals) * 100;
 
 int percentageToValue(double percentage, int intervals) =>
-    (percentage * intervals) ~/ 100;
+    ((percentage * intervals) / 100).round();
 
 bool isPointInsideCircle(Offset point, Offset center, double rradius) {
-  var radius = rradius * 3;
+  var radius = rradius * 1.2;
   return point.dx < (center.dx + radius) &&
       point.dx > (center.dx - radius) &&
       point.dy < (center.dy + radius) &&
       point.dy > (center.dy - radius);
 }
 
-bool isPointAlongCircle(Offset point, double radius) {
+bool isPointAlongCircle(Offset point, Offset center, double radius) {
   // distance is root(sqr(x2 - x1) + sqr(y2 - y1))
   // i.e., (7,8) and (3,2) -> 7.21
-  var d1 = pow(point.dx - radius, 2);
-  var d2 = pow(point.dy - radius, 2);
+  var d1 = pow(point.dx - center.dx, 2);
+  var d2 = pow(point.dy - center.dy, 2);
   var distance = sqrt(d1 + d2);
   return (distance - radius).abs() < 10;
 }
@@ -58,4 +58,12 @@ List<Offset> getSectionsCoordinatesInCircle(
     var radians = (pi / 2) + (intervalAngle * i);
     return radiansToCoordinates(center, radians, radius);
   }).toList();
+}
+
+bool isAngleInsideRadiansSelection(double angle, double start, double sweep) {
+  var normalized = angle > pi / 2 ? 5 * pi / 2 - angle : pi / 2 - angle;
+  var end = (start + sweep) % (2 * pi);
+  return end > start
+      ? normalized > start && normalized < end
+      : normalized > start || normalized < end;
 }

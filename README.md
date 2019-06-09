@@ -101,7 +101,15 @@ There are two different options:
 
 ### Use Cases
 
-### Sleep Time Selection
+#### Move complete selection
+
+![Move Selection](./doc/move-selection.gif)
+
+#### Single Handler
+
+![Sleep Single Slider](./doc/single-slider.gif)
+
+#### Sleep Time Selection
 
 ```dart
 import 'dart:math';
@@ -186,19 +194,22 @@ class _SleepPageState extends State<SleepPage> {
           'How long did you stay in bed?',
           style: TextStyle(color: Colors.white),
         ),
-        CircularSlider(
+        DoubleCircularSlider(
           288,
           initTime,
           endTime,
-          height: 220.0,
-          width: 220.0,
+          height: 260.0,
+          width: 260.0,
+          primarySectors: 6,
+          secondarySectors: 24,
           baseColor: Color.fromRGBO(255, 255, 255, 0.1),
           selectionColor: baseColor,
           handlerColor: Colors.white,
           handlerOutterRadius: 12.0,
           onSelectionChange: _updateLabels,
+          sliderStrokeWidth: 12.0,
           child: Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(42.0),
             child: Center(
                 child: Text('${_formatIntervalTime(inBedTime, outBedTime)}',
                     style: TextStyle(fontSize: 36.0, color: Colors.white))),
@@ -255,5 +266,3 @@ class _SleepPageState extends State<SleepPage> {
 ```
 
 ![Sleep Slider](./doc/sleep-slider.gif)
-
-![Sleep Single Slider](./doc/single-slider.gif)

@@ -49,7 +49,6 @@ class CircularSliderPaint extends StatefulWidget {
 class _CircularSliderState extends State<CircularSliderPaint> {
   bool _isInitHandlerSelected = false;
   bool _isEndHandlerSelected = false;
-  double _sliderRadius;
 
   SliderPainter _painter;
 
@@ -62,8 +61,20 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   /// the absolute angle in radians representing the selection
   double _sweepAngle;
 
+  /// in case we have a double slider and we want to move the whole selection by clicking in the slider
+  /// this will capture the position in the selection relative to the initial handler
+  /// that way we will be able to keep the selection constant when moving
+  int _differenceFromInitPoint;
+
   bool get isDoubleHandler => widget.mode == CircularSliderMode.doubleHandler;
+
   bool get isSingleHandler => widget.mode == CircularSliderMode.singleHandler;
+
+  bool get isBothHandlersSelected =>
+      _isEndHandlerSelected && _isInitHandlerSelected;
+
+  bool get isNoHandlersSelected =>
+      !_isEndHandlerSelected && !_isInitHandlerSelected;
 
   @override
   void initState() {
@@ -97,12 +108,12 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       },
       child: CustomPaint(
         painter: BasePainter(
-            baseColor: widget.baseColor,
-            selectionColor: widget.selectionColor,
-            primarySectors: widget.primarySectors,
-            secondarySectors: widget.secondarySectors,
-            sliderStrokeWidth: widget.sliderStrokeWidth,
-            onCalculatedRadius: (double radius) => _sliderRadius = radius),
+          baseColor: widget.baseColor,
+          selectionColor: widget.selectionColor,
+          primarySectors: widget.primarySectors,
+          secondarySectors: widget.secondarySectors,
+          sliderStrokeWidth: widget.sliderStrokeWidth,
+        ),
         foregroundPainter: _painter,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -151,7 +162,24 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     var percentage = radiansToPercentage(angle);
     var newValue = percentageToValue(percentage, widget.divisions);
 
-    if (isDoubleHandler && _isInitHandlerSelected) {
+    if (isBothHandlersSelected) {
+      var newValueInit =
+          (newValue - _differenceFromInitPoint) % widget.divisions;
+      if (newValueInit != widget.init) {
+        var newValueEnd =
+            (widget.end + (newValueInit - widget.init)) % widget.divisions;
+        widget.onSelectionChange(newValueInit, newValueEnd);
+      }
+      return;
+    }
+
+    if (isSingleHandler) {
+      widget.onSelectionChange(widget.init, newValue);
+      return;
+    }
+
+    // isDoubleHandler but one handler was selected
+    if (_isInitHandlerSelected) {
       widget.onSelectionChange(newValue, widget.end);
     } else {
       widget.onSelectionChange(widget.init, newValue);
@@ -169,19 +197,40 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     }
     RenderBox renderBox = context.findRenderObject();
     var position = renderBox.globalToLocal(details);
-    if (position != null) {
-      if (isSingleHandler) {
-        if (isPointAlongCircle(position, _sliderRadius)) {
-          _isEndHandlerSelected = true;
-          _onPanUpdate(details);
-        }
-      } else {
-        _isInitHandlerSelected = isPointInsideCircle(
-            position, _painter.initHandler, widget.handlerOutterRadius);
 
-        if (!_isInitHandlerSelected) {
-          _isEndHandlerSelected = isPointInsideCircle(
-              position, _painter.endHandler, widget.handlerOutterRadius);
+    if (position == null) {
+      return false;
+    }
+
+    if (isSingleHandler) {
+      if (isPointAlongCircle(position, _painter.center, _painter.radius)) {
+        _isEndHandlerSelected = true;
+        _onPanUpdate(details);
+      }
+    } else {
+      _isInitHandlerSelected = isPointInsideCircle(
+          position, _painter.initHandler, widget.handlerOutterRadius);
+
+      if (!_isInitHandlerSelected) {
+        _isEndHandlerSelected = isPointInsideCircle(
+            position, _painter.endHandler, widget.handlerOutterRadius);
+      }
+
+      if (isNoHandlersSelected) {
+        // we check if the user pressed in the selection in a double handler slider
+        // that means the user wants to move the selection as a whole
+        if (isPointAlongCircle(position, _painter.center, _painter.radius)) {
+          var angle = coordinatesToRadians(_painter.center, position);
+          if (isAngleInsideRadiansSelection(angle, _startAngle, _sweepAngle)) {
+            _isEndHandlerSelected = true;
+            _isInitHandlerSelected = true;
+            var positionPercentage = radiansToPercentage(angle);
+
+            // no need to account for negative values, that will be sorted out in the onPanUpdate
+            _differenceFromInitPoint =
+                percentageToValue(positionPercentage, widget.divisions) -
+                    widget.init;
+          }
         }
       }
     }

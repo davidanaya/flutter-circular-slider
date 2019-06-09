@@ -9,7 +9,6 @@ class BasePainter extends CustomPainter {
   Color selectionColor;
   int primarySectors;
   int secondarySectors;
-  Function onCalculatedRadius;
   double sliderStrokeWidth;
 
   Offset center;
@@ -21,7 +20,6 @@ class BasePainter extends CustomPainter {
     @required this.primarySectors,
     @required this.secondarySectors,
     @required this.sliderStrokeWidth,
-    this.onCalculatedRadius,
   });
 
   @override
@@ -31,7 +29,6 @@ class BasePainter extends CustomPainter {
     center = Offset(size.width / 2, size.height / 2);
     radius = min(size.width / 2, size.height / 2) - sliderStrokeWidth;
     // we need this in the parent to calculate if the user clicks on the circumference
-    onCalculatedRadius(radius);
 
     assert(radius > 0);
 
