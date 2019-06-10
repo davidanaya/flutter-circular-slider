@@ -19,7 +19,7 @@ class CircularSliderPaint extends StatefulWidget {
   final int primarySectors;
   final int secondarySectors;
   final SelectionChanged<int> onSelectionChange;
-  final Function onSelectionEnd;
+  final SelectionChanged<int> onSelectionEnd;
   final Color baseColor;
   final Color selectionColor;
   final Color handlerColor;
@@ -272,14 +272,28 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     var percentage = radiansToPercentage(angle);
     var newValue = percentageToValue(percentage, widget.divisions);
 
-    if (_isInitHandlerSelected) {
-      widget.onSelectionEnd(newValue, widget.end);
-    } else {
-      widget.onSelectionEnd(widget.init, newValue);
+    if (isBothHandlersSelected) {
+      var newValueInit =
+          (newValue - _differenceFromInitPoint) % widget.divisions;
+      if (newValueInit != widget.init) {
+        var newValueEnd =
+            (widget.end + (newValueInit - widget.init)) % widget.divisions;
+        widget.onSelectionChange(newValueInit, newValueEnd, _laps);
+      }
+      return;
     }
 
-    _isInitHandlerSelected = false;
-    _isEndHandlerSelected = false;
+    if (isSingleHandler) {
+      widget.onSelectionChange(widget.init, newValue, _laps);
+      return;
+    }
+
+    // isDoubleHandler but one handler was selected
+    if (_isInitHandlerSelected) {
+      widget.onSelectionChange(newValue, widget.end, _laps);
+    } else {
+      widget.onSelectionChange(widget.init, newValue, _laps);
+    }
   }
 
   bool _onPanDown(Offset details) {

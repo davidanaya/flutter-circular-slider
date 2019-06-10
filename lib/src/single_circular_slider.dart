@@ -49,7 +49,7 @@ class SingleCircularSlider extends StatefulWidget {
 
   /// callback function when init and end finish
   /// (int init, int end) => void
-  final Function onSelectionEnd;
+  final SelectionChanged<int> onSelectionEnd;
 
   /// outter radius for the handlers
   final double handlerOutterRadius;
@@ -124,9 +124,9 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
               _end = newEnd;
             });
           },
-          onSelectionEnd: (newInit, newEnd) {
+          onSelectionEnd: (newInit, newEnd, laps) {
             if (widget.onSelectionEnd != null) {
-              widget.onSelectionEnd(newInit, newEnd);
+              widget.onSelectionEnd(newInit, newEnd, laps);
             }
           },
           sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
