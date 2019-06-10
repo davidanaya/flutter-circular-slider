@@ -233,41 +233,16 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     if (_painter.center == null) {
       return;
     }
-    RenderBox renderBox = context.findRenderObject();
-    var position = renderBox.globalToLocal(details);
 
-    var angle = coordinatesToRadians(_painter.center, position);
-    var percentage = radiansToPercentage(angle);
-    var newValue = percentageToValue(percentage, widget.divisions);
-
-    if (isBothHandlersSelected) {
-      var newValueInit =
-          (newValue - _differenceFromInitPoint) % widget.divisions;
-      if (newValueInit != widget.init) {
-        var newValueEnd =
-            (widget.end + (newValueInit - widget.init)) % widget.divisions;
-        widget.onSelectionChange(newValueInit, newValueEnd, _laps);
-      }
-      return;
-    }
-
-    if (isSingleHandler) {
-      widget.onSelectionChange(widget.init, newValue, _laps);
-      return;
-    }
-
-    // isDoubleHandler but one handler was selected
-    if (_isInitHandlerSelected) {
-      widget.onSelectionChange(newValue, widget.end, _laps);
-    } else {
-      widget.onSelectionChange(widget.init, newValue, _laps);
-    }
+    _handlePan(details);
   }
 
-  void _onPanEnd(Offset details) {
+  void _onPanEnd(Offset details) => _handlePan(details);
+
+  void _handlePan(Offset details) {
     RenderBox renderBox = context.findRenderObject();
     var position = renderBox.globalToLocal(details);
-    
+
     var angle = coordinatesToRadians(_painter.center, position);
     var percentage = radiansToPercentage(angle);
     var newValue = percentageToValue(percentage, widget.divisions);
