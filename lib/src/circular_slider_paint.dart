@@ -258,11 +258,6 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       return;
     }
 
-    if (isSingleHandler) {
-      widget.onSelectionChange(widget.init, newValue, _laps);
-      return;
-    }
-
     // isDoubleHandler but one handler was selected
     if (_isInitHandlerSelected) {
       widget.onSelectionChange(newValue, widget.end, _laps);
