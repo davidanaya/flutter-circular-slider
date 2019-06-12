@@ -91,6 +91,7 @@ There are two different options:
 | secondarySectors          |                          0                          | Number of secondary sectors painted in the base circle. Painted in baseColor.                                           |
 | child                     |                        null                         | Widget that will be inserted in the center of the circular slider.                                                      |
 | onSelectionChange         | void onSelectionChange(int init, int end, int laps) | Triggered every time the user interacts with the slider and changes the init and end values, and also laps.             |
+| onSelectionEnd            |  void onSelectionEnd(int init, int end, int laps)   | Triggered every time the user finish one interaction with the slider.                                                   |
 | baseColor                 |         Color.fromRGBO(255, 255, 255, 0.1)          | The color used for the base of the circle.                                                                              |
 | selectionColor            |         Color.fromRGBO(255, 255, 255, 0.3)          | The color used for the selection in the circle.                                                                         |
 | handlerColor              |                    Colors.white                     | The color used for the handlers.                                                                                        |
