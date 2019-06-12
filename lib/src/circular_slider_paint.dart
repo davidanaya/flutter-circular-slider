@@ -19,6 +19,7 @@ class CircularSliderPaint extends StatefulWidget {
   final int primarySectors;
   final int secondarySectors;
   final SelectionChanged<int> onSelectionChange;
+  final SelectionChanged<int> onSelectionEnd;
   final Color baseColor;
   final Color selectionColor;
   final Color handlerColor;
@@ -38,6 +39,7 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.primarySectors,
     @required this.secondarySectors,
     @required this.onSelectionChange,
+    @required this.onSelectionEnd,
     @required this.baseColor,
     @required this.selectionColor,
     @required this.handlerColor,
@@ -231,6 +233,13 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     if (_painter.center == null) {
       return;
     }
+
+    _handlePan(details);
+  }
+
+  void _onPanEnd(Offset details) => _handlePan(details);
+
+  void _handlePan(Offset details) {
     RenderBox renderBox = context.findRenderObject();
     var position = renderBox.globalToLocal(details);
 
@@ -249,22 +258,12 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       return;
     }
 
-    if (isSingleHandler) {
-      widget.onSelectionChange(widget.init, newValue, _laps);
-      return;
-    }
-
     // isDoubleHandler but one handler was selected
     if (_isInitHandlerSelected) {
       widget.onSelectionChange(newValue, widget.end, _laps);
     } else {
       widget.onSelectionChange(widget.init, newValue, _laps);
     }
-  }
-
-  void _onPanEnd(_) {
-    _isInitHandlerSelected = false;
-    _isEndHandlerSelected = false;
   }
 
   bool _onPanDown(Offset details) {
