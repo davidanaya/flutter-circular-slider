@@ -233,13 +233,17 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     if (_painter.center == null) {
       return;
     }
-
-    _handlePan(details);
+    _handlePan(details, false);
   }
 
-  void _onPanEnd(Offset details) => _handlePan(details);
+  void _onPanEnd(Offset details) {
+    _handlePan(details, true);
 
-  void _handlePan(Offset details) {
+    _isInitHandlerSelected = false;
+    _isEndHandlerSelected = false;
+  }
+
+  void _handlePan(Offset details, bool isPanEnd) {
     RenderBox renderBox = context.findRenderObject();
     var position = renderBox.globalToLocal(details);
 
@@ -254,6 +258,9 @@ class _CircularSliderState extends State<CircularSliderPaint> {
         var newValueEnd =
             (widget.end + (newValueInit - widget.init)) % widget.divisions;
         widget.onSelectionChange(newValueInit, newValueEnd, _laps);
+        if (isPanEnd) {
+          widget.onSelectionEnd(newValueInit, newValueEnd, _laps);
+        }
       }
       return;
     }
@@ -261,8 +268,14 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     // isDoubleHandler but one handler was selected
     if (_isInitHandlerSelected) {
       widget.onSelectionChange(newValue, widget.end, _laps);
+      if (isPanEnd) {
+        widget.onSelectionEnd(newValue, widget.end, _laps);
+      }
     } else {
       widget.onSelectionChange(widget.init, newValue, _laps);
+      if (isPanEnd) {
+        widget.onSelectionEnd(widget.init, newValue, _laps);
+      }
     }
   }
 

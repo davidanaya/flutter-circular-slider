@@ -129,6 +129,7 @@ class _SleepPageState extends State<SleepPage> {
           handlerColor: Colors.white,
           handlerOutterRadius: 12.0,
           onSelectionChange: _updateLabels,
+          onSelectionEnd: (a, b, c) => print('onSelectionEnd $a $b $c'),
           sliderStrokeWidth: 12.0,
           child: Padding(
               padding: const EdgeInsets.all(42.0),
