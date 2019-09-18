@@ -16,6 +16,7 @@ class SliderPainter extends CustomPainter {
   bool showRoundedCapInSelection;
   bool showHandlerOutter;
   double sliderStrokeWidth;
+  bool counterClockwise;
 
   Offset initHandler;
   Offset endHandler;
@@ -33,6 +34,7 @@ class SliderPainter extends CustomPainter {
     @required this.showRoundedCapInSelection,
     @required this.showHandlerOutter,
     @required this.sliderStrokeWidth,
+    @required this.counterClockwise,
   });
 
   @override
@@ -42,6 +44,9 @@ class SliderPainter extends CustomPainter {
     center = Offset(size.width / 2, size.height / 2);
     radius = min(size.width / 2, size.height / 2) - sliderStrokeWidth;
 
+    if (true == counterClockwise) {
+      sweepAngle = -(2 * pi - sweepAngle);
+    }
     canvas.drawArc(Rect.fromCircle(center: center, radius: radius),
         -pi / 2 + startAngle, sweepAngle, false, progress);
 
