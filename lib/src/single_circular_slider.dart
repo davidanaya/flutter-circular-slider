@@ -67,6 +67,9 @@ class SingleCircularSlider extends StatefulWidget {
   /// otherwise, everytime the user completes a full lap, the selection restarts from 0
   final bool shouldCountLaps;
 
+  /// if specified, displays the selection in a counter-clockwise direction
+  final bool counterClockwise;
+
   SingleCircularSlider(
     this.divisions,
     this.position, {
@@ -85,6 +88,7 @@ class SingleCircularSlider extends StatefulWidget {
     this.showHandlerOutter,
     this.sliderStrokeWidth,
     this.shouldCountLaps,
+    this.counterClockwise,
   })  : assert(position >= 0 && position <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(divisions >= 0 && divisions <= 300,
@@ -138,6 +142,7 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
           showRoundedCapInSelection: widget.showRoundedCapInSelection ?? false,
           showHandlerOutter: widget.showHandlerOutter ?? true,
           shouldCountLaps: widget.shouldCountLaps ?? false,
+          counterClockwise: widget.counterClockwise ?? false,
         ));
   }
 }
