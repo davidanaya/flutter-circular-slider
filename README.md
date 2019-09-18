@@ -100,6 +100,8 @@ There are two different options:
 | showHandlerOutter         |                        true                         | If true will display an extra ring around the handlers.                                                                 |
 | sliderStrokeWidth         |                        12.0                         | The stroke width for the slider (thickness).                                                                            |
 | shouldCountLaps           |                        false                        | If true, onSelectionChange will also return the updated number of laps.                                                 |
+| counterClockwise           |                        false                        | If specified, will draw the slider selection in a counter-clockwise direction.            |
+
 
 ### Use Cases
 
