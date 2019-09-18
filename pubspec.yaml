@@ -12,6 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  path_drawing: ^0.4.0 # for dashed lines  
 
 dev_dependencies:
   flutter_test:
