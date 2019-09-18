@@ -29,6 +29,7 @@ class CircularSliderPaint extends StatefulWidget {
   final bool showHandlerOutter;
   final double sliderStrokeWidth;
   final bool shouldCountLaps;
+  final List<double> dashList;
 
   CircularSliderPaint({
     @required this.mode,
@@ -48,6 +49,7 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.showHandlerOutter,
     @required this.sliderStrokeWidth,
     @required this.shouldCountLaps,
+    this.dashList,
   });
 
   @override
@@ -113,10 +115,10 @@ class _CircularSliderState extends State<CircularSliderPaint> {
         CustomPanGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<CustomPanGestureRecognizer>(
           () => CustomPanGestureRecognizer(
-                onPanDown: _onPanDown,
-                onPanUpdate: _onPanUpdate,
-                onPanEnd: _onPanEnd,
-              ),
+            onPanDown: _onPanDown,
+            onPanUpdate: _onPanUpdate,
+            onPanEnd: _onPanEnd,
+          ),
           (CustomPanGestureRecognizer instance) {},
         ),
       },
@@ -127,6 +129,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
           primarySectors: widget.primarySectors,
           secondarySectors: widget.secondarySectors,
           sliderStrokeWidth: widget.sliderStrokeWidth,
+          dashList: widget.dashList,
         ),
         foregroundPainter: _painter,
         child: Padding(

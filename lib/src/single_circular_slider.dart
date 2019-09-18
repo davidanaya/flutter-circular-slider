@@ -67,6 +67,9 @@ class SingleCircularSlider extends StatefulWidget {
   /// otherwise, everytime the user completes a full lap, the selection restarts from 0
   final bool shouldCountLaps;
 
+  /// if specified, use a dashed-line with the given Dash list as the base circle
+  final List<double> dashList;
+
   SingleCircularSlider(
     this.divisions,
     this.position, {
@@ -85,6 +88,7 @@ class SingleCircularSlider extends StatefulWidget {
     this.showHandlerOutter,
     this.sliderStrokeWidth,
     this.shouldCountLaps,
+    this.dashList,
   })  : assert(position >= 0 && position <= divisions,
             'init has to be > 0 and < divisions value'),
         assert(divisions >= 0 && divisions <= 300,
@@ -138,6 +142,7 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
           showRoundedCapInSelection: widget.showRoundedCapInSelection ?? false,
           showHandlerOutter: widget.showHandlerOutter ?? true,
           shouldCountLaps: widget.shouldCountLaps ?? false,
+          dashList: widget.dashList,
         ));
   }
 }

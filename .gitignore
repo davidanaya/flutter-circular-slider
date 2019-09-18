@@ -11,3 +11,4 @@ ios/Runner/GeneratedPluginRegistrant.*
 
 example/pubspec.lock
 example/.packages
+example/ios/Flutter/flutter_export_environment.sh

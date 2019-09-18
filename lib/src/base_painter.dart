@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:path_drawing/path_drawing.dart';
 
 import 'utils.dart';
 
@@ -10,6 +11,7 @@ class BasePainter extends CustomPainter {
   int primarySectors;
   int secondarySectors;
   double sliderStrokeWidth;
+  List<double> dashList;
 
   Offset center;
   double radius;
@@ -20,6 +22,7 @@ class BasePainter extends CustomPainter {
     @required this.primarySectors,
     @required this.secondarySectors,
     @required this.sliderStrokeWidth,
+    this.dashList,
   });
 
   @override
@@ -32,7 +35,12 @@ class BasePainter extends CustomPainter {
 
     assert(radius > 0);
 
-    canvas.drawCircle(center, radius, base);
+    Path path = Path();
+    path.addOval(Rect.fromCircle(center: center, radius: radius));
+    if (dashList != null) {
+      path = dashPath(path, dashArray: CircularIntervalList<double>(dashList));
+    }
+    canvas.drawPath(path, base);
 
     if (primarySectors > 0) {
       _paintSectors(primarySectors, 8.0, selectionColor, canvas);
