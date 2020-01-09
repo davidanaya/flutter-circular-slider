@@ -85,38 +85,40 @@ class _SleepPageState extends State<SleepPage> {
           'How long did you stay in bed?',
           style: TextStyle(color: Colors.white),
         ),
-        // SingleCircularSlider(
-        //   288,
-        //   endTime,
-        //   height: 220.0,
-        //   width: 220.0,
-        //   primarySectors: 6,
-        //   secondarySectors: 24,
-        //   baseColor: Color.fromRGBO(255, 255, 255, 0.1),
-        //   selectionColor: baseColor,
-        //   handlerColor: Colors.white,
-        //   handlerOutterRadius: 12.0,
-        //   onSelectionChange: _updateLabels,
-        //   showRoundedCapInSelection: true,
-        //   showHandlerOutter: false,
-        //   child: Padding(
-        //       padding: const EdgeInsets.all(42.0),
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           SizedBox(height: 20),
-        //           Text('${_formatIntervalTime(inBedTime, outBedTime)}',
-        //               style: TextStyle(fontSize: 24.0, color: Colors.white)),
-        //           Text('${_formatDays(days)}',
-        //               style: TextStyle(
-        //                   fontSize: 16.0,
-        //                   color: Colors.white,
-        //                   fontStyle: FontStyle.italic)),
-        //         ],
-        //       )),
-        //   shouldCountLaps: true,
-        // ),
-        DoubleCircularSlider(
+        SingleCircularSlider(
+          288,
+          endTime,
+          height: 220.0,
+          width: 220.0,
+          primarySectors: 6,
+          secondarySectors: 24,
+          baseColor: Color.fromRGBO(255, 255, 255, 0.1),
+          selectionColor: Color.fromRGBO(255, 255, 255, 0.1),//baseColor,
+          handlerColor: Colors.white,
+          handlerRadius: 16,
+          handlerOutterRadius: 24.0,
+          onSelectionChange: _updateLabels,
+          showRoundedCapInSelection: true,
+          showHandlerOutter: false,
+          child: Padding(
+              padding: const EdgeInsets.all(42.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 20),
+                  Text('${_formatIntervalTime(inBedTime, outBedTime)}',
+                      style: TextStyle(fontSize: 24.0, color: Colors.white)),
+                  Text('${_formatDays(days)}',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontStyle: FontStyle.italic)),
+                ],
+              )),
+          shouldCountLaps: true,
+        ),
+
+/*         DoubleCircularSlider(
           288,
           initTime,
           endTime,
@@ -147,7 +149,10 @@ class _SleepPageState extends State<SleepPage> {
                 ],
               )),
           shouldCountLaps: true,
-        ),
+        ), */
+
+
+
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           _formatBedTime('IN THE', inBedTime),
           _formatBedTime('OUT OF', outBedTime),
