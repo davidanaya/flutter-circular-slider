@@ -294,7 +294,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     }
 
     if (isSingleHandler) {
-      if (isPointAlongCircle(position, _painter.center, _painter.radius)) {
+      if (isPointAlongCircle(position, _painter.center, _painter.radius,padding: widget.handlerOutterRadius)) {
         _isEndHandlerSelected = true;
         _onPanUpdate(details);
       }

@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+
 double percentageToRadians(double percentage) => ((2 * pi * percentage) / 100);
 
 double radiansToPercentage(double radians) {
@@ -30,18 +32,24 @@ int percentageToValue(double percentage, int intervals) =>
 bool isPointInsideCircle(Offset point, Offset center, double rradius) {
   var radius = rradius * 1.2;
   return point.dx < (center.dx + radius) &&
-      point.dx > (center.dx - radius) &&
-      point.dy < (center.dy + radius) &&
-      point.dy > (center.dy - radius);
+         point.dx > (center.dx - radius) &&
+         point.dy < (center.dy + radius) &&
+         point.dy > (center.dy - radius);
 }
 
-bool isPointAlongCircle(Offset point, Offset center, double radius) {
+bool isPointAlongCircle(Offset point, Offset center, double radius,{double padding=15}) {
   // distance is root(sqr(x2 - x1) + sqr(y2 - y1))
   // i.e., (7,8) and (3,2) -> 7.21
+
+  double padOffSet =  padding*2;
+
+  radius = radius + padding;
+  
   var d1 = pow(point.dx - center.dx, 2);
   var d2 = pow(point.dy - center.dy, 2);
   var distance = sqrt(d1 + d2);
-  return (distance - radius).abs() < 10;
+
+  return (distance - radius).abs() < padOffSet;
 }
 
 double getSweepAngle(double init, double end) {
