@@ -51,6 +51,9 @@ class SingleCircularSlider extends StatefulWidget {
   /// (int init, int end) => void
   final SelectionChanged<int> onSelectionEnd;
 
+  /// radius for the handlers
+  final double handlerRadius;
+
   /// outter radius for the handlers
   final double handlerOutterRadius;
 
@@ -80,6 +83,7 @@ class SingleCircularSlider extends StatefulWidget {
     this.handlerColor,
     this.onSelectionChange,
     this.onSelectionEnd,
+    this.handlerRadius,
     this.handlerOutterRadius,
     this.showRoundedCapInSelection,
     this.showHandlerOutter,
@@ -134,6 +138,7 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
           selectionColor:
               widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),
           handlerColor: widget.handlerColor ?? Colors.white,
+          handlerRadius: widget.handlerRadius ?? 8.0,
           handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
           showRoundedCapInSelection: widget.showRoundedCapInSelection ?? false,
           showHandlerOutter: widget.showHandlerOutter ?? true,

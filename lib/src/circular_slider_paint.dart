@@ -23,6 +23,7 @@ class CircularSliderPaint extends StatefulWidget {
   final Color baseColor;
   final Color selectionColor;
   final Color handlerColor;
+  final double handlerRadius;
   final double handlerOutterRadius;
   final Widget child;
   final bool showRoundedCapInSelection;
@@ -43,6 +44,7 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.baseColor,
     @required this.selectionColor,
     @required this.handlerColor,
+    @required this.handlerRadius,
     @required this.handlerOutterRadius,
     @required this.showRoundedCapInSelection,
     @required this.showHandlerOutter,
@@ -181,6 +183,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       sweepAngle: _sweepAngle,
       selectionColor: widget.selectionColor,
       handlerColor: widget.handlerColor,
+      handlerRadius: widget.handlerRadius,
       handlerOutterRadius: widget.handlerOutterRadius,
       showRoundedCapInSelection: widget.showRoundedCapInSelection,
       showHandlerOutter: widget.showHandlerOutter,
@@ -291,7 +294,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     }
 
     if (isSingleHandler) {
-      if (isPointAlongCircle(position, _painter.center, _painter.radius)) {
+      if (isPointAlongCircle(position, _painter.center, _painter.radius,padding: widget.handlerOutterRadius)) {
         _isEndHandlerSelected = true;
         _onPanUpdate(details);
       }
