@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_slider/flutter_circular_slider.dart';
+import 'package:flutter_circular_slider/circular_slider_decoration.dart';
 
 void main() {
   debugPrintGestureArenaDiagnostics = false;
@@ -124,13 +125,8 @@ class _SleepPageState extends State<SleepPage> {
           width: 260.0,
           primarySectors: 6,
           secondarySectors: 24,
-          baseColor: Color.fromRGBO(255, 255, 255, 0.1),
-          selectionColor: baseColor,
-          handlerColor: Colors.white,
-          handlerOutterRadius: 12.0,
           onSelectionChange: _updateLabels,
           onSelectionEnd: (a, b, c) => print('onSelectionEnd $a $b $c'),
-          sliderStrokeWidth: 12.0,
           child: Padding(
               padding: const EdgeInsets.all(42.0),
               child: Column(
