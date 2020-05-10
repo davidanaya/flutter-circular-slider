@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_slider/flutter_circular_slider.dart';
-import 'package:flutter_circular_slider/circular_slider_decoration.dart';
 
 void main() {
   debugPrintGestureArenaDiagnostics = false;
