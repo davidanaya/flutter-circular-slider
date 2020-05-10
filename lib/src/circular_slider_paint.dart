@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'base_painter.dart';
 import 'slider_painter.dart';
 import 'utils.dart';
+import 'circular_slider_decoration.dart';
 
 enum CircularSliderMode { singleHandler, doubleHandler }
 
@@ -20,15 +23,9 @@ class CircularSliderPaint extends StatefulWidget {
   final int secondarySectors;
   final SelectionChanged<int> onSelectionChange;
   final SelectionChanged<int> onSelectionEnd;
-  final Color baseColor;
-  final Color selectionColor;
-  final Color handlerColor;
-  final double handlerOutterRadius;
   final Widget child;
-  final bool showRoundedCapInSelection;
-  final bool showHandlerOutter;
-  final double sliderStrokeWidth;
   final bool shouldCountLaps;
+  final CircularSliderDecoration sliderDecoration;
 
   CircularSliderPaint({
     @required this.mode,
@@ -40,14 +37,8 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.secondarySectors,
     @required this.onSelectionChange,
     @required this.onSelectionEnd,
-    @required this.baseColor,
-    @required this.selectionColor,
-    @required this.handlerColor,
-    @required this.handlerOutterRadius,
-    @required this.showRoundedCapInSelection,
-    @required this.showHandlerOutter,
-    @required this.sliderStrokeWidth,
     @required this.shouldCountLaps,
+    @required this.sliderDecoration,
   });
 
   @override
@@ -93,6 +84,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   @override
   void initState() {
     super.initState();
+
     _calculatePaintData();
   }
 
@@ -122,11 +114,10 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       },
       child: CustomPaint(
         painter: BasePainter(
-          baseColor: widget.baseColor,
-          selectionColor: widget.selectionColor,
+          decoration: widget.sliderDecoration,
           primarySectors: widget.primarySectors,
           secondarySectors: widget.secondarySectors,
-          sliderStrokeWidth: widget.sliderStrokeWidth,
+          sliderStrokeWidth: widget.sliderDecoration.sweepDecoration.sliderStrokeWidth,
         ),
         foregroundPainter: _painter,
         child: Padding(
@@ -179,12 +170,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       startAngle: _startAngle,
       endAngle: _endAngle,
       sweepAngle: _sweepAngle,
-      selectionColor: widget.selectionColor,
-      handlerColor: widget.handlerColor,
-      handlerOutterRadius: widget.handlerOutterRadius,
-      showRoundedCapInSelection: widget.showRoundedCapInSelection,
-      showHandlerOutter: widget.showHandlerOutter,
-      sliderStrokeWidth: widget.sliderStrokeWidth,
+      sliderDecorator : widget.sliderDecoration
     );
   }
 
@@ -297,11 +283,11 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       }
     } else {
       _isInitHandlerSelected = isPointInsideCircle(
-          position, _painter.initHandler, widget.handlerOutterRadius);
+          position, _painter.initHandlerCenterLocation, widget.sliderDecoration.initHandlerDecoration.handlerOutterRadius);
 
       if (!_isInitHandlerSelected) {
         _isEndHandlerSelected = isPointInsideCircle(
-            position, _painter.endHandler, widget.handlerOutterRadius);
+            position, _painter.endHandlerCenterLocation, widget.sliderDecoration.endHandlerDecoration.handlerOutterRadius);
       }
 
       if (isNoHandlersSelected) {
