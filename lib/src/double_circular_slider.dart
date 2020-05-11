@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'circular_slider_paint.dart';
 import 'circular_slider_decoration.dart';
+import 'circular_slider_validator.dart';
 
 /// Returns a widget which displays a circle to be used as a slider.
 ///
@@ -52,6 +53,8 @@ class DoubleCircularSlider extends StatefulWidget {
   /// if set to true, and either init or end is bigger than divisions the Widget will auto calculated the number of laps
   final bool shouldCountLaps;
 
+  final MinMaxAngleValidator minmaxValidator;
+
   final CircularSliderDecoration decoration;
 
   DoubleCircularSlider(
@@ -65,8 +68,9 @@ class DoubleCircularSlider extends StatefulWidget {
     this.secondarySectors,
     this.onSelectionChange,
     this.onSelectionEnd,
-    this.decoration,
     this.shouldCountLaps,
+    this.decoration,
+    this.minmaxValidator,
   })  : assert((!shouldCountLaps) ? init >= 0 && init <= divisions : true,
             'init has to be > 0 and < divisions value'),
         assert((!shouldCountLaps) ? end >= 0 && end <= divisions : true,
@@ -85,8 +89,10 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
   @override
   void initState() {
     super.initState();
-    _init = widget.init;
-    _end = widget.end;
+
+    _init = widget.init % widget.divisions;
+    _end = widget.end % widget.divisions;
+
   }
 
   CircularSliderDecoration getDefaultSliderDecorator()
@@ -143,6 +149,7 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
           mode: CircularSliderMode.doubleHandler,
           init: _init,
           end: _end,
+          minmaxValidator: widget.minmaxValidator,
           divisions: widget.divisions,
           primarySectors: widget.primarySectors ?? 0,
           secondarySectors: widget.secondarySectors ?? 0,
