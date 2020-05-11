@@ -1,9 +1,14 @@
+import 'dart:isolate';
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'base_painter.dart';
 import 'slider_painter.dart';
 import 'utils.dart';
+import 'circular_slider_decoration.dart';
+import 'circular_slider_validator.dart';
 
 enum CircularSliderMode { singleHandler, doubleHandler }
 
@@ -20,15 +25,10 @@ class CircularSliderPaint extends StatefulWidget {
   final int secondarySectors;
   final SelectionChanged<int> onSelectionChange;
   final SelectionChanged<int> onSelectionEnd;
-  final Color baseColor;
-  final Color selectionColor;
-  final Color handlerColor;
-  final double handlerOutterRadius;
   final Widget child;
-  final bool showRoundedCapInSelection;
-  final bool showHandlerOutter;
-  final double sliderStrokeWidth;
   final bool shouldCountLaps;
+  final CircularSliderDecoration sliderDecoration;
+  MinMaxAngleValidator minmaxValidator;
 
   CircularSliderPaint({
     @required this.mode,
@@ -40,14 +40,9 @@ class CircularSliderPaint extends StatefulWidget {
     @required this.secondarySectors,
     @required this.onSelectionChange,
     @required this.onSelectionEnd,
-    @required this.baseColor,
-    @required this.selectionColor,
-    @required this.handlerColor,
-    @required this.handlerOutterRadius,
-    @required this.showRoundedCapInSelection,
-    @required this.showHandlerOutter,
-    @required this.sliderStrokeWidth,
     @required this.shouldCountLaps,
+    @required this.sliderDecoration,
+    this.minmaxValidator,
   });
 
   @override
@@ -59,6 +54,14 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   bool _isEndHandlerSelected = false;
 
   SliderPainter _painter;
+  
+  //this field will allow us to keep track of the last known good location for endhandler
+  //it helps to fix issue when using MIN/MAX values and the slider is sweep across the total divisions
+  int lastValidEndHandlerLocation;
+
+  //this field will allow us to keep track of the last known good location for iniHandler
+  //it helps to fix issue when using MIN/MAX values and the slider is sweep across the total divisions
+  int lastValidIniHandlerLocation;
 
   /// start angle in radians where we need to locate the init handler
   double _startAngle;
@@ -93,6 +96,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   @override
   void initState() {
     super.initState();
+
     _calculatePaintData();
   }
 
@@ -122,11 +126,10 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       },
       child: CustomPaint(
         painter: BasePainter(
-          baseColor: widget.baseColor,
-          selectionColor: widget.selectionColor,
+          decoration: widget.sliderDecoration,
           primarySectors: widget.primarySectors,
           secondarySectors: widget.secondarySectors,
-          sliderStrokeWidth: widget.sliderStrokeWidth,
+          sliderStrokeWidth: widget.sliderDecoration.sweepDecoration.sliderStrokeWidth,
         ),
         foregroundPainter: _painter,
         child: Padding(
@@ -179,12 +182,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       startAngle: _startAngle,
       endAngle: _endAngle,
       sweepAngle: _sweepAngle,
-      selectionColor: widget.selectionColor,
-      handlerColor: widget.handlerColor,
-      handlerOutterRadius: widget.handlerOutterRadius,
-      showRoundedCapInSelection: widget.showRoundedCapInSelection,
-      showHandlerOutter: widget.showHandlerOutter,
-      sliderStrokeWidth: widget.sliderStrokeWidth,
+      sliderDecorator : widget.sliderDecoration
     );
   }
 
@@ -251,12 +249,31 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     var percentage = radiansToPercentage(angle);
     var newValue = percentageToValue(percentage, widget.divisions);
 
+  
     if (isBothHandlersSelected) {
-      var newValueInit =
-          (newValue - _differenceFromInitPoint) % widget.divisions;
+      var newValueInit = (newValue - _differenceFromInitPoint) % widget.divisions;
       if (newValueInit != widget.init) {
-        var newValueEnd =
-            (widget.end + (newValueInit - widget.init)) % widget.divisions;
+        var newValueEnd = (widget.end + (newValueInit - widget.init)) % widget.divisions;
+
+        ///call our minmaxValidator then configure to make sure the handler are not drag to a invalid angle
+        var ruleRes = widget.minmaxValidator?.validateSweepDrag(
+          initialIniHndLoc: widget.init, 
+          lastValidIniLoc: lastValidIniHandlerLocation, 
+          newIniValue: newValueInit,
+          initialEndHndLoc: widget.end, 
+          lastValidEndLoc: lastValidEndHandlerLocation, 
+          newEndValue: newValueEnd,
+          tLaps: _laps, 
+          onSelectionChange: widget.onSelectionChange);
+
+        if(ruleRes != null && !ruleRes)
+          return;
+
+        lastValidIniHandlerLocation = newValueInit;
+        lastValidEndHandlerLocation = newValueEnd;
+
+        print("lastValidIniHandlerLocation:$lastValidIniHandlerLocation lastValidEndHandlerLocation: $lastValidEndHandlerLocation");
+
         widget.onSelectionChange(newValueInit, newValueEnd, _laps);
         if (isPanEnd) {
           widget.onSelectionEnd(newValueInit, newValueEnd, _laps);
@@ -264,14 +281,26 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       }
       return;
     }
-
+    
     // isDoubleHandler but one handler was selected
     if (_isInitHandlerSelected) {
+      ///call our minmaxValidator then configure to make sure the handler are not drag to a invalid angle
+      var ruleRes = widget.minmaxValidator?.validateIniHandler(newValue, widget.end, lastValidIniHandlerLocation,  _laps, widget.onSelectionChange);
+      if(ruleRes != null && !ruleRes)
+        return;
+
+      lastValidIniHandlerLocation = newValue;
       widget.onSelectionChange(newValue, widget.end, _laps);
       if (isPanEnd) {
         widget.onSelectionEnd(newValue, widget.end, _laps);
       }
     } else {
+      ///call our minmaxValidator then configure to make sure the handler are not drag to a invalid angle
+      var ruleRes = widget.minmaxValidator?.validateEndHandler(newValue, widget.init, lastValidEndHandlerLocation, _laps, widget.onSelectionChange);
+      if(ruleRes != null && !ruleRes)
+        return;
+
+      lastValidEndHandlerLocation = newValue;
       widget.onSelectionChange(widget.init, newValue, _laps);
       if (isPanEnd) {
         widget.onSelectionEnd(widget.init, newValue, _laps);
@@ -283,6 +312,7 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     if (_painter == null) {
       return false;
     }
+
     RenderBox renderBox = context.findRenderObject();
     var position = renderBox.globalToLocal(details);
 
@@ -297,11 +327,11 @@ class _CircularSliderState extends State<CircularSliderPaint> {
       }
     } else {
       _isInitHandlerSelected = isPointInsideCircle(
-          position, _painter.initHandler, widget.handlerOutterRadius);
+          position, _painter.initHandlerCenterLocation, widget.sliderDecoration.initHandlerDecoration.handlerOutterRadius);
 
       if (!_isInitHandlerSelected) {
         _isEndHandlerSelected = isPointInsideCircle(
-            position, _painter.endHandler, widget.handlerOutterRadius);
+            position, _painter.endHandlerCenterLocation, widget.sliderDecoration.endHandlerDecoration.handlerOutterRadius);
       }
 
       if (isNoHandlersSelected) {

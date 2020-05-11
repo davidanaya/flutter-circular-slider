@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'circular_slider_paint.dart';
+
+import 'circular_slider_decoration.dart';
 
 /// Returns a widget which displays a circle to be used as a slider.
 ///
@@ -129,15 +133,48 @@ class _SingleCircularSliderState extends State<SingleCircularSlider> {
               widget.onSelectionEnd(newInit, newEnd, laps);
             }
           },
-          sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
-          baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
-          selectionColor:
-              widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),
-          handlerColor: widget.handlerColor ?? Colors.white,
-          handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
-          showRoundedCapInSelection: widget.showRoundedCapInSelection ?? false,
-          showHandlerOutter: widget.showHandlerOutter ?? true,
           shouldCountLaps: widget.shouldCountLaps ?? false,
+          sliderDecoration: getDefaultSliderDecorator(),
         ));
+  }
+
+
+  CircularSliderDecoration getDefaultSliderDecorator()
+  {
+    var dBox = CircularSliderHandlerDecoration(
+      color: Colors.lightBlue[900].withOpacity(0.8),
+      shape: BoxShape.circle,
+      icon: Icon(Icons.filter_tilt_shift, size: 30, color: Colors.teal[700]),
+      useRoundedCap: true,
+    );
+
+    var sweepDecoration = CircularSliderSweepDecoration(
+      sliderStrokeWidth: 12, 
+      gradient: new SweepGradient(
+        startAngle: 3 * pi / 2,
+        endAngle: 7 * pi / 2,
+        tileMode: TileMode.repeated,
+        colors: [Colors.blue.withOpacity(0.8), Colors.red.withOpacity(0.8)],
+      )
+    );
+    
+    var prdDD = CircularSliderDeviderDecoration(
+      color: Colors.blue,
+      width: 3,
+      size: 10,
+      useRoundedCap: false
+    );
+
+    var sdnDD = prdDD.copyWith(
+      width: 1,
+      size: 6,
+    );
+
+    return CircularSliderDecoration(
+      sweepDecoration, 
+      baseColor: Colors.lightBlue[200].withOpacity(0.2),
+      mainDeviderDecoration: prdDD,
+      secondDeviderDecoration: sdnDD,
+      endHandlerDecoration: dBox, );
   }
 }

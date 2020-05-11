@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'circular_slider_paint.dart';
+import 'circular_slider_decoration.dart';
+import 'circular_slider_validator.dart';
 
 /// Returns a widget which displays a circle to be used as a slider.
 ///
@@ -37,15 +40,6 @@ class DoubleCircularSlider extends StatefulWidget {
   /// width of the canvas, default at 220
   final double width;
 
-  /// color of the base circle and sections
-  final Color baseColor;
-
-  /// color of the selection
-  final Color selectionColor;
-
-  /// color of the handlers
-  final Color handlerColor;
-
   /// callback function when init and end change
   /// (int init, int end) => void
   final SelectionChanged<int> onSelectionChange;
@@ -54,18 +48,14 @@ class DoubleCircularSlider extends StatefulWidget {
   /// (int init, int end) => void
   final SelectionChanged<int> onSelectionEnd;
 
-  /// outter radius for the handlers
-  final double handlerOutterRadius;
-
-  /// if true an extra handler ring will be displayed in the handler
-  final bool showHandlerOutter;
-
-  /// stroke width for the slider, defaults at 12.0
-  final double sliderStrokeWidth;
-
   /// if true, the onSelectionChange will also return the number of laps in the slider
   /// otherwise, everytime the user completes a full lap, the selection restarts from 0
+  /// if set to true, and either init or end is bigger than divisions the Widget will auto calculated the number of laps
   final bool shouldCountLaps;
+
+  final MinMaxAngleValidator minmaxValidator;
+
+  final CircularSliderDecoration decoration;
 
   DoubleCircularSlider(
     this.divisions,
@@ -76,18 +66,14 @@ class DoubleCircularSlider extends StatefulWidget {
     this.child,
     this.primarySectors,
     this.secondarySectors,
-    this.baseColor,
-    this.selectionColor,
-    this.handlerColor,
     this.onSelectionChange,
     this.onSelectionEnd,
-    this.handlerOutterRadius,
-    this.showHandlerOutter,
-    this.sliderStrokeWidth,
     this.shouldCountLaps,
-  })  : assert(init >= 0 && init <= divisions,
+    this.decoration,
+    this.minmaxValidator,
+  })  : assert((!shouldCountLaps) ? init >= 0 && init <= divisions : true,
             'init has to be > 0 and < divisions value'),
-        assert(end >= 0 && end <= divisions,
+        assert((!shouldCountLaps) ? end >= 0 && end <= divisions : true,
             'end has to be > 0 and < divisions value'),
         assert(divisions >= 0 && divisions <= 300,
             'divisions has to be > 0 and <= 300');
@@ -99,12 +85,59 @@ class DoubleCircularSlider extends StatefulWidget {
 class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
   int _init;
   int _end;
-
+  
   @override
   void initState() {
     super.initState();
-    _init = widget.init;
-    _end = widget.end;
+
+    _init = widget.init % widget.divisions;
+    _end = widget.end % widget.divisions;
+
+  }
+
+  CircularSliderDecoration getDefaultSliderDecorator()
+  {
+    var dBox = CircularSliderHandlerDecoration(
+      color: Colors.lightBlue[900].withOpacity(0.8),
+      shape: BoxShape.circle,
+      icon: Icon(Icons.filter_tilt_shift, size: 30, color: Colors.teal[700]),
+      useRoundedCap: true,
+    );
+
+    var iBox = dBox.copyWith();
+
+    var sweepDecoration = CircularSliderSweepDecoration(
+      sliderStrokeWidth: 12, 
+      gradient: new SweepGradient(
+        startAngle: 3 * pi / 2,
+        endAngle: 7 * pi / 2,
+        tileMode: TileMode.repeated,
+        colors: [Colors.blue.withOpacity(0.8), Colors.red.withOpacity(0.8)],
+      )
+    );
+    
+    var prdDD = CircularSliderDeviderDecoration(
+      color: Colors.blue[200],
+      width: 2,
+      size: 11,
+      useRoundedCap: false
+    );
+
+    var sdnDD = CircularSliderDeviderDecoration(
+      color: Colors.lightBlue.withOpacity(0.5),
+      width: 1,
+      size: 6,
+    );
+
+    var clock = CircularSliderClockNumberDecoration();
+
+    return CircularSliderDecoration(
+      sweepDecoration, 
+      clockNumberDecoration:  clock,
+      baseColor: Colors.lightBlue[200].withOpacity(0.2),
+      mainDeviderDecoration: prdDD,
+      secondDeviderDecoration: sdnDD,
+      endHandlerDecoration: dBox, initHandlerDecoration: iBox);
   }
 
   @override
@@ -116,6 +149,7 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
           mode: CircularSliderMode.doubleHandler,
           init: _init,
           end: _end,
+          minmaxValidator: widget.minmaxValidator,
           divisions: widget.divisions,
           primarySectors: widget.primarySectors ?? 0,
           secondarySectors: widget.secondarySectors ?? 0,
@@ -134,15 +168,8 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
               widget.onSelectionEnd(newInit, newEnd, laps);
             }
           },
-          sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,
-          baseColor: widget.baseColor ?? Color.fromRGBO(255, 255, 255, 0.1),
-          selectionColor:
-              widget.selectionColor ?? Color.fromRGBO(255, 255, 255, 0.3),
-          handlerColor: widget.handlerColor ?? Colors.white,
-          handlerOutterRadius: widget.handlerOutterRadius ?? 12.0,
-          showRoundedCapInSelection: false,
-          showHandlerOutter: widget.showHandlerOutter ?? true,
           shouldCountLaps: widget.shouldCountLaps ?? false,
+          sliderDecoration: widget.decoration ?? getDefaultSliderDecorator(),
         ));
   }
 }
