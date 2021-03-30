@@ -22,50 +22,50 @@ class DoubleCircularSlider extends StatefulWidget {
 
   /// the number of primary sectors to be painted
   /// will be painted using selectionColor
-  final int primarySectors;
+  final int? primarySectors;
 
   /// the number of secondary sectors to be painted
   /// will be painted using baseColor
-  final int secondarySectors;
+  final int? secondarySectors;
 
   /// an optional widget that would be mounted inside the circle
-  final Widget child;
+  final Widget? child;
 
   /// height of the canvas, default at 220
-  final double height;
+  final double? height;
 
   /// width of the canvas, default at 220
-  final double width;
+  final double? width;
 
   /// color of the base circle and sections
-  final Color baseColor;
+  final Color? baseColor;
 
   /// color of the selection
-  final Color selectionColor;
+  final Color? selectionColor;
 
   /// color of the handlers
-  final Color handlerColor;
+  final Color? handlerColor;
 
   /// callback function when init and end change
   /// (int init, int end) => void
-  final SelectionChanged<int> onSelectionChange;
+  final SelectionChanged<int>? onSelectionChange;
 
   /// callback function when init and end finish
   /// (int init, int end) => void
-  final SelectionChanged<int> onSelectionEnd;
+  final SelectionChanged<int>? onSelectionEnd;
 
   /// outter radius for the handlers
-  final double handlerOutterRadius;
+  final double? handlerOutterRadius;
 
   /// if true an extra handler ring will be displayed in the handler
-  final bool showHandlerOutter;
+  final bool? showHandlerOutter;
 
   /// stroke width for the slider, defaults at 12.0
-  final double sliderStrokeWidth;
+  final double? sliderStrokeWidth;
 
   /// if true, the onSelectionChange will also return the number of laps in the slider
   /// otherwise, everytime the user completes a full lap, the selection restarts from 0
-  final bool shouldCountLaps;
+  final bool? shouldCountLaps;
 
   DoubleCircularSlider(
     this.divisions,
@@ -97,8 +97,8 @@ class DoubleCircularSlider extends StatefulWidget {
 }
 
 class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
-  int _init;
-  int _end;
+  late int _init;
+  late int _end;
 
   @override
   void initState() {
@@ -122,7 +122,7 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
           child: widget.child,
           onSelectionChange: (newInit, newEnd, laps) {
             if (widget.onSelectionChange != null) {
-              widget.onSelectionChange(newInit, newEnd, laps);
+              widget.onSelectionChange!(newInit, newEnd, laps);
             }
             setState(() {
               _init = newInit;
@@ -131,7 +131,7 @@ class _DoubleCircularSliderState extends State<DoubleCircularSlider> {
           },
           onSelectionEnd: (newInit, newEnd, laps) {
             if (widget.onSelectionEnd != null) {
-              widget.onSelectionEnd(newInit, newEnd, laps);
+              widget.onSelectionEnd!(newInit, newEnd, laps);
             }
           },
           sliderStrokeWidth: widget.sliderStrokeWidth ?? 12.0,

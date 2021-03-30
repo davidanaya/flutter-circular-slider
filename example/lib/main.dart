@@ -46,11 +46,11 @@ class SleepPage extends StatefulWidget {
 class _SleepPageState extends State<SleepPage> {
   final baseColor = Color.fromRGBO(255, 255, 255, 0.3);
 
-  int initTime;
-  int endTime;
+  late int initTime;
+  late int endTime;
 
-  int inBedTime;
-  int outBedTime;
+  late int inBedTime;
+  late int outBedTime;
   int days = 0;
 
   @override
