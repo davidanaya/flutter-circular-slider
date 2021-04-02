@@ -24,30 +24,30 @@ class CircularSliderPaint extends StatefulWidget {
   final Color selectionColor;
   final Color handlerColor;
   final double handlerOutterRadius;
-  final Widget child;
+  final Widget? child;
   final bool showRoundedCapInSelection;
   final bool showHandlerOutter;
   final double sliderStrokeWidth;
   final bool shouldCountLaps;
 
   CircularSliderPaint({
-    @required this.mode,
-    @required this.divisions,
-    @required this.init,
-    @required this.end,
+    required this.mode,
+    required this.divisions,
+    required this.init,
+    required this.end,
     this.child,
-    @required this.primarySectors,
-    @required this.secondarySectors,
-    @required this.onSelectionChange,
-    @required this.onSelectionEnd,
-    @required this.baseColor,
-    @required this.selectionColor,
-    @required this.handlerColor,
-    @required this.handlerOutterRadius,
-    @required this.showRoundedCapInSelection,
-    @required this.showHandlerOutter,
-    @required this.sliderStrokeWidth,
-    @required this.shouldCountLaps,
+    required this.primarySectors,
+    required this.secondarySectors,
+    required this.onSelectionChange,
+    required this.onSelectionEnd,
+    required this.baseColor,
+    required this.selectionColor,
+    required this.handlerColor,
+    required this.handlerOutterRadius,
+    required this.showRoundedCapInSelection,
+    required this.showHandlerOutter,
+    required this.sliderStrokeWidth,
+    required this.shouldCountLaps,
   });
 
   @override
@@ -58,21 +58,21 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   bool _isInitHandlerSelected = false;
   bool _isEndHandlerSelected = false;
 
-  SliderPainter _painter;
+  late SliderPainter _painter;
 
   /// start angle in radians where we need to locate the init handler
-  double _startAngle;
+  double _startAngle = 0.0;
 
   /// end angle in radians where we need to locate the end handler
-  double _endAngle;
+  double _endAngle = 0.0;
 
   /// the absolute angle in radians representing the selection
-  double _sweepAngle;
+  double _sweepAngle = 0.0;
 
   /// in case we have a double slider and we want to move the whole selection by clicking in the slider
   /// this will capture the position in the selection relative to the initial handler
   /// that way we will be able to keep the selection constant when moving
-  int _differenceFromInitPoint;
+  late int _differenceFromInitPoint;
 
   /// will store the number of full laps (2pi radians) as part of the selection
   int _laps = 0;
@@ -230,9 +230,6 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     if (!_isInitHandlerSelected && !_isEndHandlerSelected) {
       return;
     }
-    if (_painter.center == null) {
-      return;
-    }
     _handlePan(details, false);
   }
 
@@ -244,8 +241,9 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   }
 
   void _handlePan(Offset details, bool isPanEnd) {
-    RenderBox renderBox = context.findRenderObject();
-    var position = renderBox.globalToLocal(details);
+    RenderObject? renderBox = context.findRenderObject();
+    assert(renderBox != null && renderBox is RenderBox);
+    var position = (renderBox as RenderBox).globalToLocal(details);
 
     var angle = coordinatesToRadians(_painter.center, position);
     var percentage = radiansToPercentage(angle);
@@ -280,15 +278,9 @@ class _CircularSliderState extends State<CircularSliderPaint> {
   }
 
   bool _onPanDown(Offset details) {
-    if (_painter == null) {
-      return false;
-    }
-    RenderBox renderBox = context.findRenderObject();
-    var position = renderBox.globalToLocal(details);
-
-    if (position == null) {
-      return false;
-    }
+    RenderObject? renderBox = context.findRenderObject();
+    assert(renderBox != null && renderBox is RenderBox);
+    var position = (renderBox as RenderBox).globalToLocal(details);
 
     if (isSingleHandler) {
       if (isPointAlongCircle(position, _painter.center, _painter.radius)) {
@@ -332,9 +324,9 @@ class CustomPanGestureRecognizer extends OneSequenceGestureRecognizer {
   final Function onPanEnd;
 
   CustomPanGestureRecognizer({
-    @required this.onPanDown,
-    @required this.onPanUpdate,
-    @required this.onPanEnd,
+    required this.onPanDown,
+    required this.onPanUpdate,
+    required this.onPanEnd,
   });
 
   @override
