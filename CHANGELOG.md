@@ -1,3 +1,7 @@
+## [3.0.0-nullsafety.0] - 2021-04-02
+
+- Update to dart 2.12 and null safety
+
 ## [2.5.0] - 2019-06-12
 
 - Add onSelectionEnd callback function to CircularSlider
