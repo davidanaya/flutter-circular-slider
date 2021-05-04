@@ -19,29 +19,29 @@ class SingleCircularSlider extends StatefulWidget {
 
   /// the number of primary sectors to be painted
   /// will be painted using selectionColor
-  final int primarySectors;
+  final int? primarySectors;
 
   /// the number of secondary sectors to be painted
   /// will be painted using baseColor
-  final int secondarySectors;
+  final int? secondarySectors;
 
   /// an optional widget that would be mounted inside the circle
   final Widget child;
 
   /// height of the canvas, default at 220
-  final double height;
+  final double? height;
 
   /// width of the canvas, default at 220
-  final double width;
+  final double? width;
 
   /// color of the base circle and sections
-  final Color baseColor;
+  final Color? baseColor;
 
   /// color of the selection
-  final Color selectionColor;
+  final Color? selectionColor;
 
   /// color of the handlers
-  final Color handlerColor;
+  final Color? handlerColor;
 
   /// callback function when init and end change
   /// (int init, int end) => void
@@ -52,34 +52,34 @@ class SingleCircularSlider extends StatefulWidget {
   final SelectionChanged<int> onSelectionEnd;
 
   /// outter radius for the handlers
-  final double handlerOutterRadius;
+  final double? handlerOutterRadius;
 
   /// if true will paint a rounded cap in the selection slider start
-  final bool showRoundedCapInSelection;
+  final bool? showRoundedCapInSelection;
 
   /// if true an extra handler ring will be displayed in the handler
-  final bool showHandlerOutter;
+  final bool? showHandlerOutter;
 
   /// stroke width for the slider, defaults at 12.0
-  final double sliderStrokeWidth;
+  final double? sliderStrokeWidth;
 
   /// if true, the onSelectionChange will also return the number of laps in the slider
   /// otherwise, everytime the user completes a full lap, the selection restarts from 0
-  final bool shouldCountLaps;
+  final bool? shouldCountLaps;
 
   SingleCircularSlider(
     this.divisions,
     this.position, {
     this.height,
     this.width,
-    this.child,
+    required this.child,
     this.primarySectors,
     this.secondarySectors,
     this.baseColor,
     this.selectionColor,
     this.handlerColor,
-    this.onSelectionChange,
-    this.onSelectionEnd,
+    required this.onSelectionChange,
+    required this.onSelectionEnd,
     this.handlerOutterRadius,
     this.showRoundedCapInSelection,
     this.showHandlerOutter,
@@ -95,7 +95,7 @@ class SingleCircularSlider extends StatefulWidget {
 }
 
 class _SingleCircularSliderState extends State<SingleCircularSlider> {
-  int _end;
+  late int _end;
 
   @override
   void initState() {

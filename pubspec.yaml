@@ -7,7 +7,7 @@ repository: https://github.com/davidanaya/flutter-circular-slider
 issue_tracker: https://github.com/davidanaya/flutter-circular-slider/issues
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
