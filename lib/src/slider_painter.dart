@@ -17,22 +17,22 @@ class SliderPainter extends CustomPainter {
   bool showHandlerOutter;
   double sliderStrokeWidth;
 
-  Offset initHandler;
-  Offset endHandler;
-  Offset center;
-  double radius;
+  late Offset initHandler;
+  late Offset endHandler;
+  late Offset center;
+  late double radius;
 
   SliderPainter({
-    @required this.mode,
-    @required this.startAngle,
-    @required this.endAngle,
-    @required this.sweepAngle,
-    @required this.selectionColor,
-    @required this.handlerColor,
-    @required this.handlerOutterRadius,
-    @required this.showRoundedCapInSelection,
-    @required this.showHandlerOutter,
-    @required this.sliderStrokeWidth,
+    required this.mode,
+    required this.startAngle,
+    required this.endAngle,
+    required this.sweepAngle,
+    required this.selectionColor,
+    required this.handlerColor,
+    required this.handlerOutterRadius,
+    required this.showRoundedCapInSelection,
+    required this.showHandlerOutter,
+    required this.sliderStrokeWidth,
   });
 
   @override
@@ -62,7 +62,7 @@ class SliderPainter extends CustomPainter {
     }
   }
 
-  Paint _getPaint({@required Color color, double width, PaintingStyle style}) =>
+  Paint _getPaint({required Color color, double? width, PaintingStyle? style}) =>
       Paint()
         ..color = color
         ..strokeCap =
