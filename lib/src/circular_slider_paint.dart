@@ -103,6 +103,8 @@ class _CircularSliderState extends State<CircularSliderPaint> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.init != widget.init || oldWidget.end != widget.end) {
       _calculatePaintData();
+    } else if (oldWidget.selectionColor != widget.selectionColor || oldWidget.handlerColor != widget.handlerColor){
+      _calculatePaintData();
     }
   }
 
